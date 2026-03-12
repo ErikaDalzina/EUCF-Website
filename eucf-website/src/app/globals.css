@@ -22,3 +22,15 @@
 body {
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.text-outline {
+  text-shadow:
+    -3px -3px 0 black,
+     3px -3px 0 black,
+    -3px  3px 0 black,
+     3px  3px 0 black,
+     0px -3px 0 black,
+     0px  3px 0 black,
+    -3px  0px 0 black,
+     3px  0px 0 black;
+}
