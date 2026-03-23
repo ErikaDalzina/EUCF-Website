@@ -17,14 +17,14 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 bg-black w-full py-1 mb-6">
-      <nav className="flex items-center justify-between px-6 md:px-10 h-16">
+      <nav className="flex items-center justify-between px-4 md:px-6 h-16">
         <div className="relative w-32 h-10 md:w-40 md:h-12 shrink-0">
           <Link href="/">
             <Image
               src="/esportsLogo.png"
               alt="EUCF Esports Logo"
               fill
-              className="object-contain"
+              className="object-contain object-left"
             />
           </Link>
         </div>
@@ -79,7 +79,7 @@ export default function Header() {
         role="navigation"
         aria-label="Mobile navigation"
       >
-        <div className="flex flex-col px-6 pb-4 gap-1">
+        <div className="flex flex-col px-4 pb-4 gap-1">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
