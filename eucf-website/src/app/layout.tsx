@@ -43,7 +43,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${robotoCondensed.variable} antialiased min-h-screen flex flex-col text-gray-900`} 
+        className={`${geistSans.variable} ${geistMono.variable} ${robotoCondensed.variable} antialiased min-h-screen flex flex-col text-gray-900 overflow-x-hidden`}
       >
         <Header />
         <main className="flex-1 min-h-screen">

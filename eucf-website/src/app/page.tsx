@@ -6,7 +6,7 @@ export default function Home() {
       <div className="fixed inset-0 -z-10 bg-[url('/skyBackground.png')] bg-cover bg-center" />
         <div>
           <nav
-            className="flex flex-col items-start gap-8 pl-10.5 pt-16 font-(family-name:--font-roboto-condensed) text-7xl italic font-bold text-white text-outline"
+            className="flex flex-col items-start gap-8 px-6 md:pl-10.5 pt-16 font-(family-name:--font-roboto-condensed) text-4xl md:text-7xl italic font-bold text-white text-outline"
           >
             <Link href="/about" className="hover:text-[#B49758] transition">ABOUT US</Link>
             <Link href="/officers" className="hover:text-[#B49758] transition">OFFICERS</Link>
