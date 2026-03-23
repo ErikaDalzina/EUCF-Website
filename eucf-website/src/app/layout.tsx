@@ -46,12 +46,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${robotoCondensed.variable} antialiased min-h-screen flex flex-col text-gray-900`} 
       >
         <Header />
-        <main>
-          <div>
-            {children}
-          </div>
+        <main className="flex-1 min-h-screen">
+          {children}
         </main>
-        <footer className="mt-24">
+        <footer>
           <Footer/>
         </footer>
       </body>

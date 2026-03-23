@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function Header() {
   return (
-    <header className="pt-6.5 pl-10.5">
+    <header className="pt-6.5 pl-10.5 mb-14">
       <Image
         src="/esportsLogo.png"
         alt="EUCF Esports Logo"
