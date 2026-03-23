@@ -46,7 +46,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${robotoCondensed.variable} antialiased min-h-screen flex flex-col text-gray-900 overflow-x-hidden`}
       >
         <Header />
-        <main className="flex-1 min-h-screen">
+        <main className="flex-1 min-h-screen pt-6">
           {children}
         </main>
         <footer className="mt-4">
