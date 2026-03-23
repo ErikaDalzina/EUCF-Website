@@ -8,7 +8,6 @@ const officers: Officer[] = [
   { name: "Sam Williams", position: "Secretary", image: "/knighto.png" },
   { name: "Chris Brown", position: "Event Coordinator", image: "/knighto.png" },
   { name: "Taylor Davis", position: "Social Media Manager", image: "/knighto.png" },
-  { name: "Jordan Wilson", position: "Team Captain", image: "/knighto.png" },
 ];
 
 export default function OfficersCarousel() {

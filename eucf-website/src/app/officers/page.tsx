@@ -6,7 +6,7 @@ export default function Officers() {
       <h1 className="font-(family-name:--font-roboto-condensed) text-6xl italic font-bold text-white text-outline text-center">
         OFFICERS
       </h1>
-      <p className="text-xl text-zinc-900 text-center px-8 mx-auto mt-12 mb-16">
+      <p className="text-xl text-zinc-900 text-center px-8 mx-auto mt-10 mb-12">
         Meet the leaders behind EUCF. Our officers dedicate their time to growing UCF’s 
         Esports scene through competition, collaboration, and community on and off campus, 
         creating opportunities for students to connect and level up together.
