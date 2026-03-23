@@ -16,8 +16,8 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-black w-full py-1 mb-6">
-      <nav className="flex items-center justify-between px-4 md:px-6 h-16">
+    <header className="sticky top-0 z-50 bg-black w-full">
+      <nav className="flex items-center justify-between px-4 md:px-6 h-19">
         <div className="relative w-32 h-10 md:w-40 md:h-12 shrink-0">
           <Link href="/">
             <Image
