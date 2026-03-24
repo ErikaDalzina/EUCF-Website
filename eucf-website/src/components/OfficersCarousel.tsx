@@ -5,12 +5,13 @@ import OfficerCard from "./OfficerCard";
 import type { Officer } from "./OfficerCard";
 
 const officers: Officer[] = [
-  { name: "John Doe", position: "President", image: "/knighto.png" },
-  { name: "Jane Smith", position: "Vice President", image: "/knighto.png" },
-  { name: "Alex Johnson", position: "Treasurer", image: "/knighto.png" },
-  { name: "Sam Williams", position: "Secretary", image: "/knighto.png" },
-  { name: "Chris Brown", position: "Event Coordinator", image: "/knighto.png" },
-  { name: "Taylor Davis", position: "Social Media Manager", image: "/knighto.png" },
+  { name: "Gavin Groth", position: "President", image: "/knighto.png" },
+  { name: "Yasser Ouazran", position: "Vice President", image: "/knighto.png" },
+  { name: "Aleksandra Hila", position: "Treasurer", image: "/knighto.png" },
+  { name: "Grady Roberts", position: "General Manager", image: "/knighto.png" },
+  { name: "Serena Tranchino", position: "Event Coordinator", image: "/knighto.png" },
+  { name: "Isabella Marrero", position: "Marketing Director", image: "/knighto.png" },
+  { name: "Andrea Herrera", position: "Content Coordinator", image: "/andrea.jpg" },
 ];
 
 export default function OfficersCarousel() {
