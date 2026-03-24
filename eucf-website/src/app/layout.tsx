@@ -49,7 +49,7 @@ export default function RootLayout({
         <main className="flex-1 min-h-screen pt-6">
           {children}
         </main>
-        <footer className="mt-4">
+        <footer className="mt-2">
           <Footer/>
         </footer>
       </body>

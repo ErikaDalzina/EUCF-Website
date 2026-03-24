@@ -4,12 +4,18 @@ export interface Officer {
   name: string;
   position: string;
   image: string;
+  isActive?: boolean;
+  onTap?: () => void;
 }
 
-export default function OfficerCard({ name, position, image }: Officer) {
+export default function OfficerCard({ name, position, image, isActive, onTap }: Officer) {
   return (
-    <div className="shrink-0 transition-transform duration-300 hover:scale-105 border-2 
-                    border-transparent hover:border-black rounded-lg overflow-hidden">
+    <div
+      onClick={onTap}
+      className={`shrink-0 transition-transform duration-300 hover:scale-105 border-2
+                  hover:border-black rounded-lg overflow-hidden cursor-pointer
+                  ${isActive ? "scale-105 border-black" : "border-transparent"}`}
+    >
       <div className="overflow-hidden">
         <div className="relative w-65 sm:w-85 md:w-100 aspect-3/4 bg-amber-400">
           <Image

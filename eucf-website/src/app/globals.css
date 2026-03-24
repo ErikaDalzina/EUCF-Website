@@ -33,6 +33,12 @@ body {
   }
 }
 
+@media (hover: hover) {
+  .carousel-track:has(:hover) {
+    animation-play-state: paused;
+  }
+}
+
 .text-outline {
   text-shadow:
     -3px -3px 0 black,
