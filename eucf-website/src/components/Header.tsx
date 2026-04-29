@@ -9,7 +9,7 @@ const NAV_LINKS = [
   { href: "/officers", label: "OFFICERS" },
   { href: "/titles", label: "TITLES" },
   { href: "/sponsors", label: "SPONSORS" },
-  { href: "/connect", label: "CONNECT" },
+  { href: "/connect", label: "CONTACT US" },
 ];
 
 export default function Header() {

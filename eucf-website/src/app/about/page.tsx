@@ -18,8 +18,8 @@ const sections = [
 export default function About() {
   return (
     <div className="min-h-screen">
-      <h1 className="font-(family-name:--font-roboto-condensed) text-6xl italic font-bold text-white text-outline text-center">
-        ABOUT US
+      <h1 className="font-heading text-6xl font-semibold text-heading text-center">
+        About Us
       </h1>
 
       <div className="mx-auto max-w-6xl px-6 md:px-16 pt-10 pb-20 space-y-16">
@@ -29,7 +29,7 @@ export default function About() {
             className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center"
           >
             <div>
-              <h2 className="font-(family-name:--font-roboto-condensed) text-3xl md:text-4xl italic font-bold text-white text-outline mb-4 text-center">
+              <h2 className="font-heading text-3xl md:text-4xl font-semibold text-heading mb-4 text-center">
                 {section.title}
               </h2>
               <p className="text-lg text-zinc-900">{section.text}</p>

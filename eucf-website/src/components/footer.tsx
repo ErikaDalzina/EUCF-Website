@@ -15,7 +15,7 @@ export default function Footer() {
                 className="object-contain"
               />
             </div>
-            <h2 className="text-xl leading-9.5 font-normal text-left">
+            <h2 className="text-xl font-bold leading-9.5 text-left">
               University of Central Florida
             </h2>
             <p className="text-xl leading-9.5 font-normal">
