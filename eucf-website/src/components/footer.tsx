@@ -15,31 +15,36 @@ export default function Footer() {
                 className="object-contain"
               />
             </div>
-            <h2 className="text-xl font-bold leading-9.5 text-left">
+            <h2 className="text-xl font-bold leading-snug text-left">
               University of Central Florida
             </h2>
-            <p className="text-xl leading-9.5 font-normal">
+            <p className="text-xl leading-snug font-normal">
               4000 Central Florida Blvd
               <br />
               Orlando, FL 32816
             </p>
           </div>
-          <div className="flex flex-col justify-between space-y-4 text-left">
-            <p className="text-xl leading-9.5 font-normal">
-              Copyright © 2026, University of Central Florida. All rights reserved.
-            </p>
-            <p className="text-xl leading-9.5 font-normal max-w-md">
-              This website is created and maintained by EUCF’s website developer team.
-            </p>
-            <p className="text-xl leading-9.5 font-normal">
-              For inquiries, reach us at:{" "}
-              <a
-                href="mailto:esportsatucf@gmail.com"
-                className="underline hover:opacity-60 transition"
-              >
-                esportsatucf@gmail.com
-              </a>
-            </p>
+          <div className="flex flex-col text-left">
+            <div className="space-y-10">
+              <p className="text-xl leading-snug font-normal">
+                Copyright © 2026, University of Central Florida. All rights reserved.
+              </p>
+              <p className="text-xl leading-snug font-normal">
+                For inquiries, reach us at:{" "}
+                <a
+                  href="mailto:esportsatucf@gmail.com"
+                  className="underline hover:opacity-60 transition"
+                >
+                  esportsatucf@gmail.com
+                </a>
+              </p>
+            </div>
+            <a
+              href="#top"
+              className="mt-auto pt-8 text-xl leading-snug font-normal underline hover:opacity-60 transition self-start"
+            >
+              Back to top
+            </a>
           </div>
         </div>
       </div>
