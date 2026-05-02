@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 
 export default function Footer() {
@@ -39,12 +41,13 @@ export default function Footer() {
                 </a>
               </p>
             </div>
-            <a
-              href="#top"
-              className="mt-auto pt-8 text-xl leading-snug font-normal underline hover:opacity-60 transition self-start"
+            <button
+              type="button"
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              className="mt-auto pt-8 text-xl leading-snug font-normal underline hover:opacity-60 transition self-start text-left bg-transparent border-0 p-0 cursor-pointer"
             >
               Back to top
-            </a>
+            </button>
           </div>
         </div>
       </div>
