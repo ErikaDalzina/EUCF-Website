@@ -43,10 +43,12 @@ export default function OfficersCarousel() {
     const step = () => {
       if (!isHoveredRef.current && !isUserScrollingRef.current && !reducedMotion) {
         const halfWidth = node.scrollWidth / 2;
-        if (halfWidth > 0) {
+        if (halfWidth > 0) 
+        {
           accumulatedScrollRef.current += halfWidth / (LOOP_SECONDS * 60);
           const whole = Math.floor(accumulatedScrollRef.current);
-          if (whole > 0) {
+          if (whole > 0) 
+          {
             node.scrollLeft += whole;
             accumulatedScrollRef.current -= whole;
             if (node.scrollLeft >= halfWidth) node.scrollLeft -= halfWidth;
@@ -58,8 +60,14 @@ export default function OfficersCarousel() {
     rafIdRef.current = requestAnimationFrame(step);
 
     return () => {
-      if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
-      if (idleTimeoutRef.current) clearTimeout(idleTimeoutRef.current);
+      if (rafIdRef.current) 
+      {
+        cancelAnimationFrame(rafIdRef.current);
+      }
+      if (idleTimeoutRef.current)
+      {
+        clearTimeout(idleTimeoutRef.current);
+      }
     };
   };
 
@@ -70,7 +78,10 @@ export default function OfficersCarousel() {
       return;
     } 
     const halfWidth = node.scrollWidth / 2;
-    if (halfWidth > 0 && node.scrollLeft >= halfWidth) node.scrollLeft -= halfWidth;
+    if (halfWidth > 0 && node.scrollLeft >= halfWidth)
+    {
+      node.scrollLeft -= halfWidth;
+    }
     const firstCard = node.firstElementChild?.firstElementChild as HTMLElement | undefined;
     const stepPx = firstCard ? firstCard.offsetWidth + 40 : 400;
     node.scrollBy({ left: direction * stepPx, behavior: "smooth" });
@@ -79,7 +90,10 @@ export default function OfficersCarousel() {
 
   const markUserScrolling = () => {
     isUserScrollingRef.current = true;
-    if (idleTimeoutRef.current) clearTimeout(idleTimeoutRef.current);
+    if (idleTimeoutRef.current)
+    {
+      clearTimeout(idleTimeoutRef.current);
+    }
     idleTimeoutRef.current = setTimeout(() => {
       isUserScrollingRef.current = false;
     }, IDLE_MS);
