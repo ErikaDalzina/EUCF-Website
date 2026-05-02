@@ -12,7 +12,6 @@
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-roboto-condensed);
   --color-heading: #1C1C1C;
-  --animate-scroll-left: scroll-left 65s linear infinite;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -26,19 +25,12 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-@keyframes scroll-left {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
-
-@media (hover: hover) {
-  .carousel-track:has(:hover) {
-    animation-play-state: paused;
-  }
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 
 .text-outline {
