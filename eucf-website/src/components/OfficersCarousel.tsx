@@ -14,7 +14,7 @@ const officers: Officer[] = [
   { name: "Andrea Herrera", position: "Secretary/Content Coordinator", image: "/andrea.jpg" },
 ];
 
-const LOOP_SECONDS = 90;
+const LOOP_SECONDS = 88;
 const IDLE_MS = 600;
 
 export default function OfficersCarousel() {
@@ -124,6 +124,7 @@ export default function OfficersCarousel() {
               isActive={activeIndex === i}
               onTap={() => handleTap(i)}
               hidden={i >= officers.length}
+              priority={i < officers.length}
             />
           ))}
         </div>
