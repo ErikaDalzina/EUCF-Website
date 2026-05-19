@@ -45,13 +45,14 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${robotoCondensed.variable} antialiased min-h-screen flex flex-col text-gray-900 overflow-x-hidden`}
       >
+        <a href="#main-content" className="sr-only">
+          Skip to main content
+        </a>
         <Header />
-        <main className="flex-1 min-h-screen pt-6">
+        <main id="main-content" tabIndex={-1} className="flex-1 min-h-screen pt-6">
           {children}
         </main>
-        <footer className="mt-2">
-          <Footer/>
-        </footer>
+        <Footer />
       </body>
     </html>
   );

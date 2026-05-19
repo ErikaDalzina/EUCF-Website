@@ -17,7 +17,10 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 bg-black w-full">
-      <nav className="flex items-center justify-between px-4 md:px-6 h-19">
+      <nav
+        className="flex items-center justify-between px-4 md:px-6 h-19"
+        aria-label="Primary"
+      >
         <div className="relative w-32 h-10 md:w-40 md:h-12 shrink-0">
           <Link href="/">
             <Image
@@ -30,11 +33,7 @@ export default function Header() {
         </div>
 
         {/* Desktop nav links */}
-        <div
-          className="hidden md:flex items-center gap-6 lg:gap-8"
-          role="navigation"
-          aria-label="Main navigation"
-        >
+        <div className="hidden md:flex items-center gap-6 lg:gap-8">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
@@ -50,8 +49,9 @@ export default function Header() {
         <button
           className="md:hidden flex flex-col justify-center items-center w-10 h-10 gap-1.5"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          aria-label="Toggle menu"
+          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           aria-expanded={isMenuOpen}
+          aria-controls="mobile-nav"
         >
           <span
             className={`block w-6 h-0.5 bg-white transition-all duration-300 ease-in-out ${
@@ -72,12 +72,14 @@ export default function Header() {
       </nav>
 
       {/* Mobile dropdown panel */}
-      <div
+      <nav
+        id="mobile-nav"
+        aria-label="Mobile menu"
+        aria-hidden={!isMenuOpen}
+        inert={!isMenuOpen}
         className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out bg-black ${
           isMenuOpen ? "max-h-80 opacity-100" : "max-h-0 opacity-0"
         }`}
-        role="navigation"
-        aria-label="Mobile navigation"
       >
         <div className="flex flex-col px-4 pb-4 gap-1">
           {NAV_LINKS.map((link) => (
@@ -91,7 +93,7 @@ export default function Header() {
             </Link>
           ))}
         </div>
-      </div>
+      </nav>
     </header>
   );
 }

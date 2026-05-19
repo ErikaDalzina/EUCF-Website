@@ -6,14 +6,19 @@ export interface Officer {
   image: string;
   isActive?: boolean;
   onTap?: () => void;
+  hidden?: boolean;
 }
 
-export default function OfficerCard({ name, position, image, isActive, onTap }: Officer) {
+export default function OfficerCard({ name, position, image, isActive, onTap, hidden }: Officer) {
   return (
-    <div
+    <button
+      type="button"
       onClick={onTap}
+      aria-pressed={!!isActive}
+      aria-hidden={hidden || undefined}
+      tabIndex={hidden ? -1 : undefined}
       className={`shrink-0 relative w-65 sm:w-85 md:w-100 aspect-3/4 bg-amber-400 transition-transform duration-300 hover:scale-105 border-2
-                  hover:border-black rounded-lg overflow-hidden cursor-pointer
+                  hover:border-black rounded-lg overflow-hidden text-left p-0
                   ${isActive ? "scale-105 border-black" : "border-transparent"}`}
     >
       <Image
@@ -29,6 +34,6 @@ export default function OfficerCard({ name, position, image, isActive, onTap }: 
         </p>
         <p className="text-lg font-semibold">{name}</p>
       </div>
-    </div>
+    </button>
   );
 }

@@ -3,8 +3,13 @@
 import Image from "next/image";
 
 export default function Footer() {
+  const handleBackToTop = () => {
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ top: 0, behavior: prefersReducedMotion ? "auto" : "smooth" });
+  };
+
   return (
-    <footer className="relative bg-zinc-900 text-white font-roboto">
+    <footer className="relative mt-2 bg-zinc-900 text-white font-roboto">
       <div className="max-w-7xl mx-auto px-6 md:px-8 py-14">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16">
           <div className="flex flex-col justify-between space-y-4">
@@ -43,7 +48,7 @@ export default function Footer() {
             </div>
             <button
               type="button"
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              onClick={handleBackToTop}
               className="mt-auto pt-8 text-xl leading-snug font-normal underline hover:opacity-60 transition self-start text-left bg-transparent border-0 p-0 cursor-pointer"
             >
               Back to top

@@ -102,11 +102,16 @@ export default function OfficersCarousel() {
   return (
     <div
       className="relative group"
+      aria-roledescription="carousel"
+      aria-label="Officers"
       onMouseEnter={() => { isHoveredRef.current = true; }}
       onMouseLeave={() => { isHoveredRef.current = false; }}
     >
       <div
         ref={containerRefCallback}
+        role="region"
+        aria-label="Officers list"
+        tabIndex={0}
         onPointerDown={markUserScrolling}
         onTouchStart={markUserScrolling}
         className="overflow-x-auto overflow-y-hidden scrollbar-hide"
@@ -118,6 +123,7 @@ export default function OfficersCarousel() {
               {...officer}
               isActive={activeIndex === i}
               onTap={() => handleTap(i)}
+              hidden={i >= officers.length}
             />
           ))}
         </div>
