@@ -5,7 +5,7 @@ import OfficerCard from "./OfficerCard";
 import type { Officer } from "./OfficerCard";
 
 const officers: Officer[] = [
-  { name: "Gavin Groth", position: "President", image: "/gavin.png" },
+  { name: "Gavin Groth", position: "President", image: "/gavinGroth.jpg" },
   { name: "Yasser Ouazran", position: "Vice President", image: "/knighto.png" },
   { name: "Aleksandra Hila", position: "Treasurer", image: "/knighto.png" },
   { name: "Grady Roberts", position: "General Manager", image: "/knighto.png" },
