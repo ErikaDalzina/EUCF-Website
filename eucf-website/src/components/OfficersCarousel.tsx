@@ -7,10 +7,10 @@ import type { Officer } from "./OfficerCard";
 const officers: Officer[] = [
   { name: "Gavin Groth", position: "President", image: "/gavinGroth.jpg" },
   { name: "Yasser Ouazran", position: "Vice President", image: "/knighto.png" },
-  { name: "Aleksandra Hila", position: "Treasurer", image: "/knighto.png" },
-  { name: "Grady Roberts", position: "General Manager", image: "/knighto.png" },
-  { name: "Serena Tranchino", position: "Event Coordinator", image: "/knighto.png" },
-  { name: "Isabella Marrero", position: "Marketing Director", image: "/knighto.png" },
+  { name: "Lucy English", position: "Treasurer", image: "/knighto.png" },
+  { name: "Marco Zuniga", position: "General Manager", image: "/knighto.png" },
+  { name: "Erika D'Alzina", position: "Event Coordinator", image: "/knighto.png" },
+  { name: "Kaliyanna Limear", position: "Marketing Director", image: "/knighto.png" },
   { name: "Andrea Herrera", position: "Secretary/Content Coordinator", image: "/andrea.jpg" },
 ];
 
