@@ -14,7 +14,7 @@ const officers: Officer[] = [
   { name: "Andrea Herrera", position: "Secretary/Content Coordinator", image: "/andrea.jpg" },
 ];
 
-const LOOP_SECONDS = 88;
+const LOOP_SECONDS = 90;
 const IDLE_MS = 600;
 
 export default function OfficersCarousel() {
@@ -116,7 +116,7 @@ export default function OfficersCarousel() {
         onTouchStart={markUserScrolling}
         className="overflow-x-auto overflow-y-hidden scrollbar-hide"
       >
-        <div className="flex w-max gap-8 sm:gap-10 py-6">
+        <div className="flex w-max gap-8 sm:gap-10 py-6 pr-8 sm:pr-10">
           {[...officers, ...officers].map((officer, i) => (
             <OfficerCard
               key={i}
