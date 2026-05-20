@@ -2,15 +2,16 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import type { Player } from "@/data/marvelRivals";
+import type { Player } from "@/types/roster";
 
 interface PlayerCardProps {
   player: Player;
   onClick: () => void;
+  gameName?: string;
   priority?: boolean;
 }
 
-export default function PlayerCard({ player, onClick, priority }: PlayerCardProps) {
+export default function PlayerCard({ player, onClick, gameName, priority }: PlayerCardProps) {
   const [loaded, setLoaded] = useState(false);
 
   return (
@@ -27,7 +28,7 @@ export default function PlayerCard({ player, onClick, priority }: PlayerCardProp
       >
         <Image
           src={player.image}
-          alt={`${player.ign}, EUCF Marvel Rivals player`}
+          alt={`${player.ign}, EUCF${gameName ? ` ${gameName}` : ""} player`}
           fill
           priority={priority}
           onLoad={() => setLoaded(true)}

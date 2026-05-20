@@ -1,35 +1,9 @@
-export interface PlayerSocials {
-  x?: string;
-  twitch?: string;
-  instagram?: string;
-  youtube?: string;
-  discord?: string;
-}
-
-export interface Player {
-  ign: string;
-  realName?: string;
-  role?: string;
-  bio?: string;
-  image: string;
-  socials?: PlayerSocials;
-}
-
-export interface MarvelRivalsTeam {
-  label: string;
-  main: Player[];
-  subs: Player[];
-}
-
-export interface MarvelRivalsRoster {
-  aTeam: MarvelRivalsTeam;
-  bTeam: MarvelRivalsTeam;
-}
+import type { GameRoster } from "@/types/roster";
 
 const PLACEHOLDER_IMAGE = "/knighto.png";
 
-export const MARVEL_RIVALS_ROSTER: MarvelRivalsRoster = {
-  aTeam: {
+export const MARVEL_RIVALS_ROSTER: GameRoster = [
+  {
     label: "Marvel Rivals A Team",
     main: [
       {
@@ -55,7 +29,7 @@ export const MARVEL_RIVALS_ROSTER: MarvelRivalsRoster = {
       { ign: "SubA2", role: "Flex", image: PLACEHOLDER_IMAGE },
     ],
   },
-  bTeam: {
+  {
     label: "Marvel Rivals B Team",
     main: [
       { ign: "BPlayer1", role: "Duelist", image: PLACEHOLDER_IMAGE },
@@ -69,8 +43,8 @@ export const MARVEL_RIVALS_ROSTER: MarvelRivalsRoster = {
       { ign: "SubB1", role: "Flex", image: PLACEHOLDER_IMAGE },
     ],
   },
-};
+];
 
-export async function getMarvelRivalsRoster(): Promise<MarvelRivalsRoster> {
+export async function getMarvelRivalsRoster(): Promise<GameRoster> {
   return MARVEL_RIVALS_ROSTER;
 }

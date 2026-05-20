@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import type { Player, PlayerSocials } from "@/data/marvelRivals";
+import type { Player, PlayerSocials } from "@/types/roster";
 
 interface PlayerModalProps {
   player: Player | null;

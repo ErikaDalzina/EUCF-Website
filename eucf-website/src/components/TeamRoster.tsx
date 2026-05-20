@@ -3,14 +3,15 @@
 import { useState } from "react";
 import PlayerCard from "./PlayerCard";
 import PlayerModal from "./PlayerModal";
-import type { MarvelRivalsTeam, Player } from "@/data/marvelRivals";
+import type { Team, Player } from "@/types/roster";
 
 interface TeamRosterProps {
-  team: MarvelRivalsTeam;
+  team: Team;
+  gameName?: string;
   priorityMainRow?: boolean;
 }
 
-export default function TeamRoster({ team, priorityMainRow }: TeamRosterProps) {
+export default function TeamRoster({ team, gameName, priorityMainRow }: TeamRosterProps) {
   const [selected, setSelected] = useState<Player | null>(null);
   const headingId = `team-${team.label.toLowerCase().replace(/\s+/g, "-")}`;
 
@@ -28,6 +29,7 @@ export default function TeamRoster({ team, priorityMainRow }: TeamRosterProps) {
           <PlayerCard
             key={`main-${i}`}
             player={player}
+            gameName={gameName}
             onClick={() => setSelected(player)}
             priority={priorityMainRow && i < 3}
           />
@@ -44,6 +46,7 @@ export default function TeamRoster({ team, priorityMainRow }: TeamRosterProps) {
               <PlayerCard
                 key={`sub-${i}`}
                 player={player}
+                gameName={gameName}
                 onClick={() => setSelected(player)}
               />
             ))}
