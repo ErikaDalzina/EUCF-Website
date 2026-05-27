@@ -5,12 +5,12 @@ import OfficerCard from "./OfficerCard";
 import type { Officer } from "./OfficerCard";
 
 const officers: Officer[] = [
-  { name: "Gavin Groth", position: "President", image: "/gavin.png" },
+  { name: "Gavin Groth", position: "President", image: "/gavinGroth.jpg" },
   { name: "Yasser Ouazran", position: "Vice President", image: "/knighto.png" },
-  { name: "Aleksandra Hila", position: "Treasurer", image: "/knighto.png" },
-  { name: "Grady Roberts", position: "General Manager", image: "/knighto.png" },
-  { name: "Serena Tranchino", position: "Event Coordinator", image: "/knighto.png" },
-  { name: "Isabella Marrero", position: "Marketing Director", image: "/knighto.png" },
+  { name: "Lucy English", position: "Treasurer", image: "/knighto.png" },
+  { name: "Marco Zuniga", position: "General Manager", image: "/knighto.png" },
+  { name: "Erika D'Alzina", position: "Event Coordinator", image: "/knighto.png" },
+  { name: "Kaliyanna Limear", position: "Marketing Director", image: "/knighto.png" },
   { name: "Andrea Herrera", position: "Secretary/Content Coordinator", image: "/andrea.jpg" },
 ];
 
@@ -116,7 +116,7 @@ export default function OfficersCarousel() {
         onTouchStart={markUserScrolling}
         className="overflow-x-auto overflow-y-hidden scrollbar-hide"
       >
-        <div className="flex w-max gap-8 sm:gap-10 py-6">
+        <div className="flex w-max gap-8 sm:gap-10 py-6 pr-8 sm:pr-10">
           {[...officers, ...officers].map((officer, i) => (
             <OfficerCard
               key={i}
@@ -124,6 +124,7 @@ export default function OfficersCarousel() {
               isActive={activeIndex === i}
               onTap={() => handleTap(i)}
               hidden={i >= officers.length}
+              priority={i < officers.length}
             />
           ))}
         </div>
