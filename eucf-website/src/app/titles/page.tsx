@@ -4,7 +4,7 @@ import { TITLES } from "@/data/titles";
 
 export default function Titles() {
   return (
-    <div className="min-h-screen">
+    <div>
       <TitleHeader
         title="Titles"
         description="Explore the games EUCF competes in. Click any title to meet the team and learn more."

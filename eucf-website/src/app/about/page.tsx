@@ -17,7 +17,7 @@ const sections = [
 
 export default function About() {
   return (
-    <div className="min-h-screen">
+    <div>
       <h1 className="font-heading text-6xl font-semibold text-heading text-center">
         About Us
       </h1>

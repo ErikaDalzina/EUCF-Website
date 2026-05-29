@@ -7,7 +7,7 @@ import { VALORANT_ROSTER } from "@/data/valorant";
 export default function ValorantPage() {
   const t = TITLES.find((x) => x.slug === "valorant")!;
   return (
-    <div className="min-h-screen">
+    <div>
       <TitleHeader title={t.name} description={t.description} />
       <div className="max-w-6xl mx-auto px-6 md:px-16 py-12 space-y-16">
         {VALORANT_ROSTER.map((team, i) => (

@@ -6,7 +6,7 @@ export default function Sponsors() {
   const placeholders = 4 - SPONSORS.length;
 
   return (
-    <div className="min-h-screen">
+    <div>
       <TitleHeader
         title="Sponsors"
         description="Meet the sponsors of Esports at UCF."

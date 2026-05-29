@@ -4,7 +4,7 @@ import { TITLES } from "@/data/titles";
 export default function CounterStrikePage() {
   const t = TITLES.find((x) => x.slug === "counter-strike")!;
   return (
-    <div className="min-h-screen">
+    <div>
       <TitleHeader title={t.name} description={t.description} />
     </div>
   );

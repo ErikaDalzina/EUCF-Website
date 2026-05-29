@@ -4,7 +4,7 @@ import { TITLES } from "@/data/titles";
 export default function LeagueOfLegendsPage() {
   const t = TITLES.find((x) => x.slug === "league-of-legends")!;
   return (
-    <div className="min-h-screen">
+    <div>
       <TitleHeader title={t.name} description={t.description} />
     </div>
   );

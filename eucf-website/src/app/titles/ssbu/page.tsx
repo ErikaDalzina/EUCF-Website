@@ -4,7 +4,7 @@ import { TITLES } from "@/data/titles";
 export default function SSBUPage() {
   const t = TITLES.find((x) => x.slug === "ssbu")!;
   return (
-    <div className="min-h-screen">
+    <div>
       <TitleHeader title={t.name} description={t.description} />
     </div>
   );
