@@ -3,6 +3,8 @@ import TitleCard from "@/components/TitleCard";
 import { TITLES } from "@/data/titles";
 
 export default function Titles() {
+  const sortedTitles = [...TITLES].sort((a, b) => a.name.localeCompare(b.name));
+
   return (
     <div>
       <TitleHeader
@@ -11,7 +13,7 @@ export default function Titles() {
       />
       <div className="mx-auto max-w-6xl px-6 md:px-16 pb-20">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
-          {TITLES.map((t) => (
+          {sortedTitles.map((t) => (
             <TitleCard
               key={t.slug}
               name={t.name}
