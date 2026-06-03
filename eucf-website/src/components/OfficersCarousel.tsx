@@ -3,16 +3,9 @@
 import { useRef, useState } from "react";
 import OfficerCard from "./OfficerCard";
 import type { Officer } from "./OfficerCard";
+import officersData from "@/data/generated/officers.json";
 
-const officers: Officer[] = [
-  { name: "Gavin Groth", position: "President", image: "/gavinGroth.jpg" },
-  { name: "Yasser Ouazran", position: "Vice President", image: "/knighto.png" },
-  { name: "Lucy English", position: "Treasurer", image: "/knighto.png" },
-  { name: "Marco Zuniga", position: "General Manager", image: "/knighto.png" },
-  { name: "Erika D'Alzina", position: "Event Coordinator", image: "/knighto.png" },
-  { name: "Kaliyanna Limear", position: "Marketing Director", image: "/knighto.png" },
-  { name: "Andrea Herrera", position: "Secretary/Content Coordinator", image: "/andrea.jpg" },
-];
+const officers: Officer[] = officersData as Officer[];
 
 const LOOP_SECONDS = 90;
 const IDLE_MS = 600;
