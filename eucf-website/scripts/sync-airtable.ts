@@ -8,35 +8,12 @@
  *
  * Run with:  npm run sync:content   (or it runs automatically via `prebuild`)
  */
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 
-// Load .env.local for standalone runs (outside `next build`). In CI the vars
-// come from the host environment, so a missing file is fine, and real env wins.
-function loadEnvLocal(): void {
-  const p = resolve(process.cwd(), ".env.local");
-  if (!existsSync(p)) return;
-  for (const line of readFileSync(p, "utf8").split("\n")) {
-    const m = line.match(/^\s*([\w.-]+)\s*=\s*(.*)$/);
-    if (!m) 
-    {
-      continue;
-    }
-    const key = m[1];
-    let val = m[2].trim();
-    if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) 
-    {
-      val = val.slice(1, -1);
-    } else {
-      val = val.replace(/\s+#.*$/, ""); // strip inline comments on unquoted values
-    }
-    if (!(key in process.env)) 
-    {
-      process.env[key] = val;
-    }
-  }
-}
-loadEnvLocal();
+// Env vars come from the host environment in CI, and from .env.local locally —
+// loaded by `node --env-file-if-exists=.env.local` in the npm scripts (see
+// package.json: `sync:content` / `prebuild`). Run with `npm run sync:content`.
 
 const TOKEN = process.env.AIRTABLE_TOKEN;
 const BASE_ID = process.env.AIRTABLE_BASE_ID;
@@ -301,6 +278,37 @@ async function main(): Promise<void> {
     imageSrc: imageUrl(s.fields[F.storyImage]),
     imageAlt: str(s.fields[F.storyImageAlt]),
   }));
+
+  // Sanity warnings — surface a mistyped F field name or table name immediately
+  // (the script still completes; placeholders remain the fallback).
+  const tableCounts: Record<string, number> = {
+    titles: titles.length,
+    teams: teams.length,
+    players: players.length,
+    officers: officers.length,
+    sponsors: sponsors.length,
+    featuredstory: stories.length,
+  };
+  for (const [name, n] of Object.entries(tableCounts)) {
+    if (n === 0) {
+      console.warn(`[sync-airtable] 0 records from "${name}" — check the table name/view.`);
+    }
+  }
+  if (titles.length && titlesOut.every((t) => !t.slug)) {
+    console.warn(`[sync-airtable] every title slug is empty — check F.titleSlug ("${F.titleSlug}").`);
+  }
+  if (players.length && Object.keys(playersOut).length === 0) {
+    console.warn(
+      `[sync-airtable] ${players.length} players fetched but none grouped into a game — ` +
+        `check F.playerTeamLink ("${F.playerTeamLink}") / F.teamTitleLink ("${F.teamTitleLink}").`
+    );
+  }
+  const allPlayers = Object.values(playersOut).flatMap((teamList) =>
+    teamList.flatMap((tm) => [...tm.main, ...tm.subs])
+  );
+  if (allPlayers.length && allPlayers.every((p) => !p.ign)) {
+    console.warn(`[sync-airtable] every player ign is empty — check F.playerIgn ("${F.playerIgn}").`);
+  }
 
   mkdirSync(OUT_DIR, { recursive: true });
   const write = (name: string, data: unknown) =>
