@@ -1,0 +1,837 @@
+{
+  "valorant": [
+    {
+      "label": "Valorant A team",
+      "main": [
+        {
+          "ign": "The Goat",
+          "realName": "Real Name",
+          "role": "Duelist",
+          "bio": "Veteran entry fragger with a love for aggressive Jett dashes. Two-year roster member and current A-team IGL for site executes.",
+          "image": "/knighto.png",
+          "socials": {
+            "x": "https://x.com/example",
+            "twitch": "https://twitch.tv/example",
+            "instagram": "https://instagram.com/example"
+          }
+        },
+        {
+          "ign": "Player2",
+          "role": "Controller",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "Player3",
+          "role": "Initiator",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "Player4",
+          "role": "Sentinel",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "Player5",
+          "role": "Flex / IGL",
+          "image": "/knighto.png"
+        }
+      ],
+      "subs": [
+        {
+          "ign": "SubA1",
+          "role": "Flex",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "SubA2",
+          "role": "Flex",
+          "image": "/knighto.png"
+        }
+      ]
+    },
+    {
+      "label": "Valorant B Team",
+      "main": [
+        {
+          "ign": "BPlayer1",
+          "role": "Duelist",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer2",
+          "role": "Controller",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer3",
+          "role": "Initiator",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer4",
+          "role": "Sentinel",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer5",
+          "role": "Flex / IGL",
+          "image": "/knighto.png"
+        }
+      ],
+      "subs": [
+        {
+          "ign": "SubB1",
+          "role": "Flex",
+          "image": "/knighto.png"
+        }
+      ]
+    }
+  ],
+  "league-of-legends": [
+    {
+      "label": "League of Legends A Team",
+      "main": [
+        {
+          "ign": "The Goat",
+          "realName": "Real Name",
+          "role": "Mid",
+          "bio": "Veteran mid laner with a deep champion pool and a love for roaming. Two-year roster member and current A-team shotcaller for mid-game macro.",
+          "image": "/knighto.png",
+          "socials": {
+            "x": "https://x.com/example",
+            "twitch": "https://twitch.tv/example",
+            "instagram": "https://instagram.com/example"
+          }
+        },
+        {
+          "ign": "Player2",
+          "role": "Top",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "Player3",
+          "role": "Jungle",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "Player4",
+          "role": "Bot",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "Player5",
+          "role": "Support",
+          "image": "/knighto.png"
+        }
+      ],
+      "subs": [
+        {
+          "ign": "SubA1",
+          "role": "Flex",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "SubA2",
+          "role": "Flex",
+          "image": "/knighto.png"
+        }
+      ]
+    },
+    {
+      "label": "League of Legends B Team",
+      "main": [
+        {
+          "ign": "BPlayer1",
+          "role": "Top",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer2",
+          "role": "Jungle",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer3",
+          "role": "Mid",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer4",
+          "role": "Bot",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer5",
+          "role": "Support",
+          "image": "/knighto.png"
+        }
+      ],
+      "subs": [
+        {
+          "ign": "SubB1",
+          "role": "Flex",
+          "image": "/knighto.png"
+        }
+      ]
+    }
+  ],
+  "splatoon": [
+    {
+      "label": "Splatoon A Team",
+      "main": [
+        {
+          "ign": "The Goat",
+          "realName": "Real Name",
+          "role": "Slayer",
+          "bio": "Veteran frontline slayer with a love for aggressive Splattershot pushes. Two-year roster member and current A-team shotcaller for engages.",
+          "image": "/knighto.png",
+          "socials": {
+            "x": "https://x.com/example",
+            "twitch": "https://twitch.tv/example",
+            "instagram": "https://instagram.com/example"
+          }
+        },
+        {
+          "ign": "Player2",
+          "role": "Support",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "Player3",
+          "role": "Skirmisher",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "Player4",
+          "role": "Anchor",
+          "image": "/knighto.png"
+        }
+      ],
+      "subs": [
+        {
+          "ign": "SubA1",
+          "role": "Flex",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "SubA2",
+          "role": "Flex",
+          "image": "/knighto.png"
+        }
+      ]
+    },
+    {
+      "label": "Splatoon B Team",
+      "main": [
+        {
+          "ign": "BPlayer1",
+          "role": "Slayer",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer2",
+          "role": "Support",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer3",
+          "role": "Skirmisher",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer4",
+          "role": "Anchor",
+          "image": "/knighto.png"
+        }
+      ],
+      "subs": [
+        {
+          "ign": "SubB1",
+          "role": "Flex",
+          "image": "/knighto.png"
+        }
+      ]
+    }
+  ],
+  "rocket-league": [
+    {
+      "label": "Rocket League A Team",
+      "main": [
+        {
+          "ign": "The Goat",
+          "realName": "Real Name",
+          "role": "Captain",
+          "bio": "Veteran trios captain known for fast aerials and clean rotations. Two-year roster member and current A-team shotcaller.",
+          "image": "/knighto.png",
+          "socials": {
+            "x": "https://x.com/example",
+            "twitch": "https://twitch.tv/example",
+            "instagram": "https://instagram.com/example"
+          }
+        },
+        {
+          "ign": "Player2",
+          "role": "Player",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "Player3",
+          "role": "Player",
+          "image": "/knighto.png"
+        }
+      ],
+      "subs": [
+        {
+          "ign": "SubA1",
+          "role": "Player",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "SubA2",
+          "role": "Player",
+          "image": "/knighto.png"
+        }
+      ]
+    },
+    {
+      "label": "Rocket League B Team",
+      "main": [
+        {
+          "ign": "BPlayer1",
+          "role": "Captain",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer2",
+          "role": "Player",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer3",
+          "role": "Player",
+          "image": "/knighto.png"
+        }
+      ],
+      "subs": [
+        {
+          "ign": "SubB1",
+          "role": "Player",
+          "image": "/knighto.png"
+        }
+      ]
+    }
+  ],
+  "marvel-rivals": [
+    {
+      "label": "Marvel Rivals A Team",
+      "main": [
+        {
+          "ign": "The Goat",
+          "realName": "Real Name",
+          "role": "Duelist",
+          "bio": "Veteran flex DPS with a love for Iron Man dives. Two-year roster member and current A-team shotcaller for engages.",
+          "image": "/knighto.png",
+          "socials": {
+            "x": "https://x.com/example",
+            "twitch": "https://twitch.tv/example",
+            "instagram": "https://instagram.com/example"
+          }
+        },
+        {
+          "ign": "Player2",
+          "role": "Vanguard",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "Player3",
+          "role": "Strategist",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "Player4",
+          "role": "Duelist",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "Player5",
+          "role": "Vanguard",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "Player6",
+          "role": "Strategist",
+          "image": "/knighto.png"
+        }
+      ],
+      "subs": [
+        {
+          "ign": "SubA1",
+          "role": "Flex",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "SubA2",
+          "role": "Flex",
+          "image": "/knighto.png"
+        }
+      ]
+    },
+    {
+      "label": "Marvel Rivals B Team",
+      "main": [
+        {
+          "ign": "BPlayer1",
+          "role": "Duelist",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer2",
+          "role": "Vanguard",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer3",
+          "role": "Strategist",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer4",
+          "role": "Duelist",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer5",
+          "role": "Vanguard",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer6",
+          "role": "Strategist",
+          "image": "/knighto.png"
+        }
+      ],
+      "subs": [
+        {
+          "ign": "SubB1",
+          "role": "Flex",
+          "image": "/knighto.png"
+        }
+      ]
+    }
+  ],
+  "ssbu": [
+    {
+      "label": "SSBU A Team",
+      "main": [
+        {
+          "ign": "The Goat",
+          "realName": "Real Name",
+          "role": "Joker",
+          "bio": "Veteran Joker main with a love for aggressive Arsene reads. Two-year roster member and current A-team captain at locals and collegiate brackets.",
+          "image": "/knighto.png",
+          "socials": {
+            "x": "https://x.com/example",
+            "twitch": "https://twitch.tv/example",
+            "instagram": "https://instagram.com/example"
+          }
+        },
+        {
+          "ign": "Player2",
+          "role": "Steve",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "Player3",
+          "role": "Fox",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "Player4",
+          "role": "Sephiroth",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "Player5",
+          "role": "Pikachu",
+          "image": "/knighto.png"
+        }
+      ],
+      "subs": [
+        {
+          "ign": "SubA1",
+          "role": "Flex",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "SubA2",
+          "role": "Flex",
+          "image": "/knighto.png"
+        }
+      ]
+    },
+    {
+      "label": "SSBU B Team",
+      "main": [
+        {
+          "ign": "BPlayer1",
+          "role": "Roy",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer2",
+          "role": "Snake",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer3",
+          "role": "Pyra/Mythra",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer4",
+          "role": "Palutena",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer5",
+          "role": "Diddy Kong",
+          "image": "/knighto.png"
+        }
+      ],
+      "subs": [
+        {
+          "ign": "SubB1",
+          "role": "Flex",
+          "image": "/knighto.png"
+        }
+      ]
+    }
+  ],
+  "apex-legends": [
+    {
+      "label": "Apex Legends A Team",
+      "main": [
+        {
+          "ign": "The Goat",
+          "realName": "Real Name",
+          "role": "IGL",
+          "bio": "Veteran in-game leader with a love for aggressive edge rotations. Two-year roster member and current A-team shotcaller for ring positioning and engages.",
+          "image": "/knighto.png",
+          "socials": {
+            "x": "https://x.com/example",
+            "twitch": "https://twitch.tv/example",
+            "instagram": "https://instagram.com/example"
+          }
+        },
+        {
+          "ign": "Player2",
+          "role": "Fragger",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "Player3",
+          "role": "Support",
+          "image": "/knighto.png"
+        }
+      ],
+      "subs": [
+        {
+          "ign": "SubA1",
+          "role": "Flex",
+          "image": "/knighto.png"
+        }
+      ]
+    },
+    {
+      "label": "Apex Legends B Team",
+      "main": [
+        {
+          "ign": "BPlayer1",
+          "role": "IGL",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer2",
+          "role": "Fragger",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer3",
+          "role": "Support",
+          "image": "/knighto.png"
+        }
+      ],
+      "subs": [
+        {
+          "ign": "SubB1",
+          "role": "Flex",
+          "image": "/knighto.png"
+        }
+      ]
+    }
+  ],
+  "counter-strike": [
+    {
+      "label": "Counter Strike 2 A Team",
+      "main": [
+        {
+          "ign": "The Goat",
+          "realName": "Real Name",
+          "role": "IGL",
+          "bio": "Veteran in-game leader with a sharp read on the round and crisp mid-round calls. Two-year roster member and current A-team shotcaller.",
+          "image": "/knighto.png",
+          "socials": {
+            "x": "https://x.com/example",
+            "twitch": "https://twitch.tv/example",
+            "instagram": "https://instagram.com/example"
+          }
+        },
+        {
+          "ign": "Player2",
+          "role": "AWPer",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "Player3",
+          "role": "Entry Fragger",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "Player4",
+          "role": "Support",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "Player5",
+          "role": "Lurker",
+          "image": "/knighto.png"
+        }
+      ],
+      "subs": [
+        {
+          "ign": "SubA1",
+          "role": "Rifler",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "SubA2",
+          "role": "Flex",
+          "image": "/knighto.png"
+        }
+      ]
+    },
+    {
+      "label": "Counter Strike 2 B Team",
+      "main": [
+        {
+          "ign": "BPlayer1",
+          "role": "IGL",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer2",
+          "role": "AWPer",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer3",
+          "role": "Entry Fragger",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer4",
+          "role": "Support",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer5",
+          "role": "Lurker",
+          "image": "/knighto.png"
+        }
+      ],
+      "subs": [
+        {
+          "ign": "SubB1",
+          "role": "Rifler",
+          "image": "/knighto.png"
+        }
+      ]
+    }
+  ],
+  "overwatch": [
+    {
+      "label": "Overwatch A Team",
+      "main": [
+        {
+          "ign": "The Goat",
+          "realName": "Real Name",
+          "role": "Tank",
+          "bio": "Veteran main tank and current A-team shotcaller. Two-year roster member known for aggressive Winston dives and reading enemy cooldowns to set up clean team fights.",
+          "image": "/knighto.png",
+          "socials": {
+            "x": "https://x.com/example",
+            "twitch": "https://twitch.tv/example",
+            "instagram": "https://instagram.com/example"
+          }
+        },
+        {
+          "ign": "Player2",
+          "role": "Damage",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "Player3",
+          "role": "Damage",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "Player4",
+          "role": "Support",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "Player5",
+          "role": "Support",
+          "image": "/knighto.png"
+        }
+      ],
+      "subs": [
+        {
+          "ign": "SubA1",
+          "role": "Flex",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "SubA2",
+          "role": "Flex",
+          "image": "/knighto.png"
+        }
+      ]
+    },
+    {
+      "label": "Overwatch B Team",
+      "main": [
+        {
+          "ign": "BPlayer1",
+          "role": "Tank",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer2",
+          "role": "Damage",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer3",
+          "role": "Damage",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer4",
+          "role": "Support",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer5",
+          "role": "Support",
+          "image": "/knighto.png"
+        }
+      ],
+      "subs": [
+        {
+          "ign": "SubB1",
+          "role": "Flex",
+          "image": "/knighto.png"
+        }
+      ]
+    }
+  ],
+  "rainbow-six-siege": [
+    {
+      "label": "Rainbow Six Siege A Team",
+      "main": [
+        {
+          "ign": "The Goat",
+          "realName": "Real Name",
+          "role": "IGL",
+          "bio": "Veteran in-game leader with a sharp read on the round and crisp mid-round calls. Two-year roster member and current A-team shotcaller.",
+          "image": "/knighto.png",
+          "socials": {
+            "x": "https://x.com/example",
+            "twitch": "https://twitch.tv/example",
+            "instagram": "https://instagram.com/example"
+          }
+        },
+        {
+          "ign": "Player2",
+          "role": "Entry Fragger",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "Player3",
+          "role": "Hard Breach",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "Player4",
+          "role": "Support",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "Player5",
+          "role": "Roamer",
+          "image": "/knighto.png"
+        }
+      ],
+      "subs": [
+        {
+          "ign": "SubA1",
+          "role": "Flex",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "SubA2",
+          "role": "Flex",
+          "image": "/knighto.png"
+        }
+      ]
+    },
+    {
+      "label": "Rainbow Six Siege B Team",
+      "main": [
+        {
+          "ign": "BPlayer1",
+          "role": "IGL",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer2",
+          "role": "Entry Fragger",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer3",
+          "role": "Hard Breach",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer4",
+          "role": "Support",
+          "image": "/knighto.png"
+        },
+        {
+          "ign": "BPlayer5",
+          "role": "Roamer",
+          "image": "/knighto.png"
+        }
+      ],
+      "subs": [
+        {
+          "ign": "SubB1",
+          "role": "Flex",
+          "image": "/knighto.png"
+        }
+      ]
+    }
+  ]
+}
