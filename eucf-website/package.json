@@ -2,6 +2,11 @@
   "name": "eucf-website",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
+  "contributors": [
+    "Erika D'alzina",
+    "Tulio Contramaestre"
+  ],
   "scripts": {
     "dev": "next dev",
     "prebuild": "node --env-file-if-exists=.env.local --import tsx scripts/sync-airtable.ts",

@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Esports at UCF (EUCF) Website
 
-## Getting Started
+The official website for **Esports at UCF (EUCF)** — the esports club at the
+University of Central Florida. It showcases the club's teams, rosters, officers,
+sponsors, and featured stories across its competitive game titles.
 
-First, run the development server:
+Built with [Next.js](https://nextjs.org) (static export) and styled with
+Tailwind CSS. Roster and content data is synced from Airtable at build time into
+`eucf-website/src/data/generated/*.json` by `eucf-website/scripts/sync-airtable.ts`.
+
+## Getting started
 
 ```bash
+cd eucf-website
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the site.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment setup
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Content sync requires Airtable credentials. Copy the example file and fill in
+your own values — **never commit real credentials** (`.env.local` is gitignored):
 
-## Learn More
+```bash
+cp eucf-website/.env.local.example eucf-website/.env.local
+```
 
-To learn more about Next.js, take a look at the following resources:
+Required variables:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `AIRTABLE_TOKEN` — Airtable Personal Access Token
+- `AIRTABLE_BASE_ID` — the Airtable base ID
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Then sync content with `npm run sync:content` (also runs automatically on `npm run build`).
 
-## Deploy on Vercel
+## License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Code is licensed under the **MIT License** (see [LICENSE](LICENSE)).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Brand assets and third-party logos are **not** covered by the MIT grant — see
+[NOTICE.md](NOTICE.md) for details.
+
+© 2026 Esports at UCF (EUCF). Developed by Erika D'alzina and Tulio Contramaestre.
