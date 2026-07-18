@@ -21,7 +21,7 @@ export default function Connect() {
       <h1 className="font-heading text-5xl md:text-6xl font-semibold text-heading text-center">
         Contact Us
       </h1>
-      <p className="text-xl text-zinc-900 text-center px-8 m-1 mx-auto p-6">
+      <p className="text-xl text-zinc-900 text-center px-8 py-6 m-1 mx-auto">
         Have a question, want to get involved, or just want to say hi? Reach out to
         Esports at UCF through any of the channels below, we&apos;d love to hear from you.
       </p>

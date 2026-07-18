@@ -5,7 +5,7 @@ export default function Home() {
     <>
     <section
       aria-label="Esports at UCF hero"
-      className="relative w-full min-h-[70vh] -mt-6 overflow-hidden bg-black"
+      className="relative w-full min-h-[70dvh] -mt-6 overflow-hidden bg-black"
     >
       <svg
         aria-hidden="true"

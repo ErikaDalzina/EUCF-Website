@@ -43,7 +43,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${robotoCondensed.variable} ${archivoBlack.variable} antialiased min-h-screen flex flex-col text-gray-900 overflow-x-hidden`}
+        className={`${robotoCondensed.variable} ${archivoBlack.variable} antialiased min-h-dvh flex flex-col text-gray-900 overflow-x-hidden`}
       >
         <a href="#main-content" className="sr-only">
           Skip to main content
