@@ -36,7 +36,7 @@ export default function OfficerCard({ name, position, image, isActive, onTap, hi
         className={`object-cover transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0"}`}
       />
       <div className="absolute bottom-0 left-0 right-0 bg-black/85 text-white p-3">
-        <p className="text-sm font-bold uppercase tracking-wide text-[#B49758]">
+        <p className="text-sm font-bold uppercase tracking-wide text-gold">
           {position}
         </p>
         <p className="text-lg font-semibold">{name}</p>
