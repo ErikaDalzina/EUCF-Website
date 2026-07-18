@@ -18,7 +18,7 @@ const SOCIALS = [
 export default function Connect() {
   return (
     <div>
-      <h1 className="font-heading text-6xl font-semibold text-heading text-center">
+      <h1 className="font-heading text-5xl md:text-6xl font-semibold text-heading text-center">
         Contact Us
       </h1>
       <p className="text-xl text-zinc-900 text-center px-8 m-1 mx-auto p-6">
@@ -29,7 +29,7 @@ export default function Connect() {
       <div className="mx-auto max-w-6xl px-6 md:px-16 pt-10 pb-20">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
           {/* Left: 6 social/contact icons, 2 per row -> 3 rows */}
-          <ul className="grid grid-cols-2 w-fit gap-x-12 gap-y-2 mx-auto md:mx-0">
+          <ul className="grid grid-cols-2 w-fit gap-x-6 sm:gap-x-12 gap-y-2 mx-auto md:mx-0">
             {SOCIALS.map((s) => (
               <li key={s.label} className="flex justify-center">
                 <a
@@ -45,7 +45,7 @@ export default function Connect() {
                     alt=""
                     width={150}
                     height={150}
-                    className="object-contain"
+                    className="object-contain w-28 h-28 sm:w-37.5 sm:h-37.5"
                   />
                   {s.external && <span className="sr-only"> (opens in new tab)</span>}
                 </a>
