@@ -47,7 +47,7 @@ export default function Header() {
 
         {/* Hamburger button (mobile) */}
         <button
-          className="md:hidden flex flex-col justify-center items-center w-10 h-10 gap-1.5"
+          className="md:hidden flex flex-col justify-center items-center w-11 h-11 gap-1.5"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           aria-expanded={isMenuOpen}
@@ -78,7 +78,7 @@ export default function Header() {
         aria-hidden={!isMenuOpen}
         inert={!isMenuOpen}
         className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out bg-black ${
-          isMenuOpen ? "max-h-80 opacity-100" : "max-h-0 opacity-0"
+          isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
         }`}
       >
         <div className="flex flex-col px-4 pb-4 gap-1">
@@ -87,7 +87,7 @@ export default function Header() {
               key={link.href}
               href={link.href}
               onClick={() => setIsMenuOpen(false)}
-              className="font-heading italic font-bold text-white text-base py-2 tracking-wide hover:text-[#B49758] transition-colors duration-200"
+              className="font-heading italic font-bold text-white text-base py-3 tracking-wide hover:text-[#B49758] transition-colors duration-200"
             >
               {link.label}
             </Link>
