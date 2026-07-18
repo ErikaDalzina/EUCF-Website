@@ -38,7 +38,7 @@ export default function Header() {
             <Link
               key={link.href}
               href={link.href}
-              className="font-heading italic font-bold text-white text-sm lg:text-base tracking-wide hover:text-[#B49758] transition-colors duration-200"
+              className="font-heading italic font-bold text-white text-sm lg:text-base tracking-wide hover:text-gold transition-colors duration-200"
             >
               {link.label}
             </Link>
@@ -87,7 +87,7 @@ export default function Header() {
               key={link.href}
               href={link.href}
               onClick={() => setIsMenuOpen(false)}
-              className="font-heading italic font-bold text-white text-base py-3 tracking-wide hover:text-[#B49758] transition-colors duration-200"
+              className="font-heading italic font-bold text-white text-base py-3 tracking-wide hover:text-gold transition-colors duration-200"
             >
               {link.label}
             </Link>
