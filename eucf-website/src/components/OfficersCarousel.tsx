@@ -3,17 +3,15 @@
 import { useRef, useState } from "react";
 import OfficerCard from "./OfficerCard";
 import type { Officer } from "./OfficerCard";
-import officersData from "@/data/generated/officers.json";
-
-const officers: Officer[] = officersData as Officer[];
 
 const LOOP_SECONDS = 90;
 const IDLE_MS = 600;
 
-export default function OfficersCarousel() {
+export default function OfficersCarousel({ officers }: { officers: Officer[] }) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   const isHoveredRef = useRef(false);
+  const isFocusedRef = useRef(false);
   const isUserScrollingRef = useRef(false);
   const idleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const rafIdRef = useRef<number | null>(null);
@@ -34,7 +32,7 @@ export default function OfficersCarousel() {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const step = () => {
-      if (!isHoveredRef.current && !isUserScrollingRef.current && !reducedMotion) {
+      if (!isHoveredRef.current && !isFocusedRef.current && !isUserScrollingRef.current && !reducedMotion) {
         const halfWidth = node.scrollWidth / 2;
         if (halfWidth > 0) 
         {
@@ -99,6 +97,12 @@ export default function OfficersCarousel() {
       aria-label="Officers"
       onMouseEnter={() => { isHoveredRef.current = true; }}
       onMouseLeave={() => { isHoveredRef.current = false; }}
+      onFocus={() => { isFocusedRef.current = true; }}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+          isFocusedRef.current = false;
+        }
+      }}
     >
       <div
         ref={containerRefCallback}

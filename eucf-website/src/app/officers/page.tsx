@@ -1,4 +1,8 @@
 import OfficersCarousel from "@/components/OfficersCarousel";
+import type { Officer } from "@/components/OfficerCard";
+import officersData from "@/data/generated/officers.json";
+
+const officers: Officer[] = officersData as Officer[];
 
 export default function Officers() {
   return (
@@ -11,7 +15,7 @@ export default function Officers() {
         Esports scene through competition, collaboration, and community on and off campus, 
         creating opportunities for students to connect and level up together.
       </p>
-      <OfficersCarousel />
+      <OfficersCarousel officers={officers} />
     </div>
   );
 }
