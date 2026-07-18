@@ -1,8 +1,10 @@
 /**
  * Build-time content sync: Airtable -> src/data/generated/*.json
  *
- * Phase 1: image fields are copied through as plain URL strings (no R2 / no
- * optimization yet). If AIRTABLE_TOKEN / AIRTABLE_BASE_ID are not set, the
+ * Image fields hold plain URL strings: images are uploaded to R2 and the R2
+ * URL is stored in the Airtable field (Airtable *attachment* URLs expire ~2h
+ * after fetch and must not be baked into the static export — the sync warns
+ * if it sees one). If AIRTABLE_TOKEN / AIRTABLE_BASE_ID are not set, the
  * script logs a warning and exits 0 so builds without secrets still succeed
  * against the committed generated JSON.
  *
@@ -146,24 +148,48 @@ async function fetchAll(table: string, view?: string): Promise<AirtableRecord[]>
 const str = (v: unknown): string =>
   typeof v === "string" ? v : v == null ? "" : String(v);
 
-// Image field may be a URL string (Phase 1) or an attachment array (Phase 2).
-function imageUrl(v: unknown): string {
-  if (typeof v === "string" && v.trim()) return v.trim();
+// Airtable *attachment* URLs expire ~2 hours after fetch; baked into the static
+// export they become broken images. Images belong in R2, with the R2 URL stored
+// in the Airtable URL field.
+const EXPIRING_URL = /airtableusercontent\.com|dl\.airtable\.com/i;
 
-  if (Array.isArray(v)) {
+// Synced URLs are written verbatim into href/src attributes, so only allow
+// https: (this also blocks javascript:/data: schemes typed into the base).
+function httpsUrl(v: unknown, field: string): string {
+  const url = str(v).trim();
+  if (!url) return "";
+  if (EXPIRING_URL.test(url)) {
+    console.warn(
+      `[sync-airtable] "${field}" is an Airtable attachment URL that expires ~2h after sync — ` +
+        `upload the image to R2 and store the R2 URL in the field instead: ${url.slice(0, 80)}…`
+    );
+  }
+  if (url.startsWith("https://")) return url;
+  console.warn(`[sync-airtable] dropping "${field}" — not an https URL: ${url.slice(0, 80)}`);
+  return "";
+}
+
+// Image field may be a URL string (an R2 URL) or an attachment array.
+function imageUrl(v: unknown, field: string): string {
+  let raw = "";
+  if (typeof v === "string") {
+    raw = v.trim();
+  } else if (Array.isArray(v)) {
     const first = v[0];
     if (
       first &&
       typeof first === "object" &&
       "url" in first &&
       typeof (first as { url: unknown }).url === "string"
-    ) 
+    )
     {
-      return (first as { url: string }).url;
+      raw = (first as { url: string }).url;
     }
   }
 
-  return PLACEHOLDER;
+  if (!raw) return PLACEHOLDER;
+  if (raw.startsWith("/")) return raw; // site-relative, served from public/
+  return httpsUrl(raw, field) || PLACEHOLDER;
 }
 
 const firstLink = (v: unknown): string | undefined =>
@@ -171,10 +197,14 @@ const firstLink = (v: unknown): string | undefined =>
 
 function socials(f: Record<string, unknown>): Record<string, string> | undefined {
   const s: Record<string, string> = {};
-  if (str(f[F.playerX])) s.x = str(f[F.playerX]);
-  if (str(f[F.playerTwitch])) s.twitch = str(f[F.playerTwitch]);
-  if (str(f[F.playerInstagram])) s.instagram = str(f[F.playerInstagram]);
-  if (str(f[F.playerDiscord])) s.discord = str(f[F.playerDiscord]);
+  const add = (key: string, field: string) => {
+    const url = httpsUrl(f[field], `player ${key}`);
+    if (url) s[key] = url;
+  };
+  add("x", F.playerX);
+  add("twitch", F.playerTwitch);
+  add("instagram", F.playerInstagram);
+  add("discord", F.playerDiscord);
   return Object.keys(s).length ? s : undefined;
 }
 
@@ -236,7 +266,7 @@ async function main(): Promise<void> {
       realName: str(p.fields[F.playerRealName]) || undefined,
       role: str(p.fields[F.playerRole]) || undefined,
       bio: str(p.fields[F.playerBio]) || undefined,
-      image: imageUrl(p.fields[F.playerImage]),
+      image: imageUrl(p.fields[F.playerImage], "player image"),
       socials: socials(p.fields),
     };
     
@@ -255,27 +285,27 @@ async function main(): Promise<void> {
   const titlesOut = titles.map((t) => ({
     name: str(t.fields[F.titleName]),
     slug: str(t.fields[F.titleSlug]),
-    icon: imageUrl(t.fields[F.titleImage]),
+    icon: imageUrl(t.fields[F.titleImage], "title icon"),
     description: str(t.fields[F.titleDescription]),
   }));
 
   const officersOut = officers.map((o) => ({
     name: str(o.fields[F.officerName]),
     position: str(o.fields[F.officerPosition]),
-    image: imageUrl(o.fields[F.officerImage]),
+    image: imageUrl(o.fields[F.officerImage], "officer image"),
   }));
 
   const sponsorsOut = sponsors.map((s) => ({
     name: str(s.fields[F.sponsorName]),
-    logo: imageUrl(s.fields[F.sponsorImage]),
-    website: str(s.fields[F.sponsorWebsite]),
+    logo: imageUrl(s.fields[F.sponsorImage], "sponsor logo"),
+    website: httpsUrl(s.fields[F.sponsorWebsite], "sponsor website"),
   }));
 
   const storiesOut = stories.map((s) => ({
     title: str(s.fields[F.storyTitle]),
     body: str(s.fields[F.storyBody]),
-    href: str(s.fields[F.storyHref]),
-    imageSrc: imageUrl(s.fields[F.storyImage]),
+    href: httpsUrl(s.fields[F.storyHref], "story href"),
+    imageSrc: imageUrl(s.fields[F.storyImage], "story image"),
     imageAlt: str(s.fields[F.storyImageAlt]),
   }));
 
