@@ -15,7 +15,7 @@ export default function SponsorCard({ name, logo, website }: SponsorCardProps) {
       aria-label={`Visit ${name} (opens in new tab)`}
       className="border-2 border-black rounded-lg overflow-hidden bg-white
                  transition-transform duration-300 hover:scale-105 block
-                 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#B49758] focus-visible:ring-offset-2"
+                 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-deep focus-visible:ring-offset-2"
     >
       <div className="relative w-full aspect-2/1 bg-white">
         <Image

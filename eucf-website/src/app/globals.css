@@ -8,11 +8,12 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: Arial, Helvetica, sans-serif;
   --font-heading: var(--font-roboto-condensed);
   --font-display: var(--font-archivo-black);
   --color-heading: #1C1C1C;
+  --color-gold: #B49758; /* brand gold — passes contrast on black only */
+  --color-gold-deep: #8a7343; /* 4.55:1 on white — use for text/indicators on light backgrounds */
 }
 
 @media (prefers-color-scheme: dark) {
@@ -79,7 +80,7 @@ input:focus-visible,
 select:focus-visible,
 textarea:focus-visible,
 [tabindex]:focus-visible {
-  outline: 2px solid #B49758;
+  outline: 2px solid var(--color-gold-deep);
   outline-offset: 2px;
   border-radius: 2px;
 }

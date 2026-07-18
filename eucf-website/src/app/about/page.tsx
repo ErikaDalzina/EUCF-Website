@@ -38,7 +38,7 @@ export default function About() {
             <div className="relative w-full aspect-4/3">
               <Image
                 src="/knighto.png"
-                alt={section.title}
+                alt=""
                 fill
                 className="object-contain rounded-lg"
               />

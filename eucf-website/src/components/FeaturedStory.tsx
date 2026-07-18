@@ -34,7 +34,7 @@ export default async function FeaturedStory() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`${linkLabel}: ${story.title}`}
-                  className="mt-8 md:mt-10 inline-block py-2 text-[#B49758] font-semibold underline underline-offset-4 hover:no-underline"
+                  className="mt-8 md:mt-10 inline-block py-2 text-gold-deep font-semibold underline underline-offset-4 hover:no-underline"
                 >
                   {linkLabel}
                   <span className="sr-only"> (opens in new tab)</span>

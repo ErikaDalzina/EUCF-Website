@@ -21,7 +21,7 @@ export default function TeamRoster({ team, gameName, priorityMainRow }: TeamRost
         {team.label}
       </h2>
 
-      <h3 className="mt-8 mb-4 text-sm font-bold uppercase tracking-widest text-[#B49758] text-center">
+      <h3 className="mt-8 mb-4 text-sm font-bold uppercase tracking-widest text-gold-deep text-center">
         Main Roster
       </h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -38,7 +38,7 @@ export default function TeamRoster({ team, gameName, priorityMainRow }: TeamRost
 
       {team.subs.length > 0 && (
         <>
-          <h3 className="mt-10 mb-4 text-sm font-bold uppercase tracking-widest text-[#B49758] text-center">
+          <h3 className="mt-10 mb-4 text-sm font-bold uppercase tracking-widest text-gold-deep text-center">
             Substitutes
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">

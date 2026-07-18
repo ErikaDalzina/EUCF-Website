@@ -130,7 +130,7 @@ export default function PlayerModal({ player, onClose }: PlayerModalProps) {
               <p className="text-zinc-500 mt-1">{player.realName}</p>
             )}
             {player.role && (
-              <span className="inline-block mt-3 px-3 py-1 rounded-full text-sm font-bold uppercase tracking-wide bg-[#B49758] text-white">
+              <span className="inline-block mt-3 px-3 py-1 rounded-full text-sm font-bold uppercase tracking-wide bg-gold-deep text-white">
                 {player.role}
               </span>
             )}
@@ -151,7 +151,7 @@ export default function PlayerModal({ player, onClose }: PlayerModalProps) {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`${player.ign} on ${s.label}`}
-                    className="w-10 h-10 rounded-full bg-zinc-100 hover:bg-[#B49758] hover:text-white text-zinc-700 flex items-center justify-center transition-colors"
+                    className="w-10 h-10 rounded-full bg-zinc-100 hover:bg-gold-deep hover:text-white text-zinc-700 flex items-center justify-center transition-colors"
                   >
                     {s.iconSrc ? (
                       <Image src={s.iconSrc} alt="" width={20} height={20} />

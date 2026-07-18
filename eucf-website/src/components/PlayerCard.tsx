@@ -39,7 +39,7 @@ export default function PlayerCard({ player, onClick, gameName, priority }: Play
       <div className="mt-3 w-full text-left">
         <p className="text-lg font-semibold text-zinc-900 leading-tight">{player.ign}</p>
         {player.role && (
-          <p className="text-sm font-semibold uppercase tracking-wide text-[#B49758] mt-0.5">
+          <p className="text-sm font-semibold uppercase tracking-wide text-gold-deep mt-0.5">
             {player.role}
           </p>
         )}
