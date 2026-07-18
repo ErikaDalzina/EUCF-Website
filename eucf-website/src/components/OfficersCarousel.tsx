@@ -131,7 +131,7 @@ export default function OfficersCarousel({ officers }: { officers: Officer[] }) 
         type="button"
         onClick={() => scrollByTwo(-2)}
         aria-label="Previous officers"
-        className="hidden md:flex absolute left-0 top-6 bottom-6 z-10 items-center justify-center w-12 bg-black/60 text-white opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-200 hover:bg-black/80"
+        className="hidden md:flex absolute left-0 top-6 bottom-6 z-10 items-center justify-center w-12 bg-black/60 text-white opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:pointer-events-auto pointer-coarse:opacity-100 pointer-coarse:pointer-events-auto transition-opacity duration-200 hover:bg-black/80"
       >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6">
           <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
@@ -142,7 +142,7 @@ export default function OfficersCarousel({ officers }: { officers: Officer[] }) 
         type="button"
         onClick={() => scrollByTwo(2)}
         aria-label="Next officers"
-        className="hidden md:flex absolute right-0 top-6 bottom-6 z-10 items-center justify-center w-12 bg-black/60 text-white opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-200 hover:bg-black/80"
+        className="hidden md:flex absolute right-0 top-6 bottom-6 z-10 items-center justify-center w-12 bg-black/60 text-white opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto group-focus-within:opacity-100 group-focus-within:pointer-events-auto pointer-coarse:opacity-100 pointer-coarse:pointer-events-auto transition-opacity duration-200 hover:bg-black/80"
       >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6">
           <path d="M9 18l6-6-6-6" strokeLinecap="round" strokeLinejoin="round" />
