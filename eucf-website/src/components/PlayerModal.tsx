@@ -95,7 +95,7 @@ export default function PlayerModal({ player, onClose }: PlayerModalProps) {
         role="dialog"
         aria-modal="true"
         aria-labelledby="player-modal-title"
-        className="relative bg-white rounded-lg overflow-hidden w-full max-w-225 md:w-225 md:h-140 md:max-h-140 shadow-2xl"
+        className="relative bg-white rounded-lg overflow-hidden w-full max-w-225 md:h-140 md:max-h-[85dvh] shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -110,8 +110,8 @@ export default function PlayerModal({ player, onClose }: PlayerModalProps) {
           </svg>
         </button>
 
-        <div className="max-h-[90vh] md:max-h-140 md:h-full flex flex-col md:flex-row overflow-y-auto md:overflow-hidden">
-        <div className="relative w-full md:w-105 aspect-3/4 md:h-full md:aspect-auto bg-neutral-900 shrink-0">
+        <div className="max-h-[90dvh] md:max-h-[85dvh] md:h-full flex flex-col md:flex-row overflow-y-auto md:overflow-hidden">
+        <div className="relative w-full md:w-2/5 md:max-w-105 aspect-3/4 md:h-full md:aspect-auto bg-neutral-900 shrink-0">
           <Image
             key={player.image}
             src={player.image}
@@ -151,7 +151,7 @@ export default function PlayerModal({ player, onClose }: PlayerModalProps) {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`${player.ign} on ${s.label}`}
-                    className="w-10 h-10 rounded-full bg-zinc-100 hover:bg-gold-deep hover:text-white text-zinc-700 flex items-center justify-center transition-colors"
+                    className="w-11 h-11 rounded-full bg-zinc-100 hover:bg-gold-deep hover:text-white text-zinc-700 flex items-center justify-center transition-colors"
                   >
                     {s.iconSrc ? (
                       <Image src={s.iconSrc} alt="" width={20} height={20} />
