@@ -1,91 +1,31 @@
 /**
  * Build-time content sync: Airtable -> src/data/generated/*.json
  *
- * Image fields hold plain URL strings: images are uploaded to R2 and the R2
- * URL is stored in the Airtable field (Airtable *attachment* URLs expire ~2h
+ * Images: editors drop attachments into the `* upload` columns in Airtable.
+ * Before JSON generation, scripts/sync-images.ts optimizes each new upload,
+ * puts it on R2, writes the public R2 URL into the main image column
+ * (`icon`/`image`/`logo` — which may also hold site-relative public/ paths),
+ * and clears the upload attachment (Airtable *attachment* URLs expire ~2h
  * after fetch and must not be baked into the static export — the sync warns
- * if it sees one). If AIRTABLE_TOKEN / AIRTABLE_BASE_ID are not set, the
- * script logs a warning and exits 0 so builds without secrets still succeed
- * against the committed generated JSON.
+ * if it sees one).
+ * If AIRTABLE_TOKEN / AIRTABLE_BASE_ID are not set, the script logs a warning
+ * and exits 0 so builds without secrets still succeed against the committed
+ * generated JSON; missing R2_* vars skip only the image step.
  *
  * Run with:  npm run sync:content   (or it runs automatically via `prebuild`)
  */
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
+import { F, TABLES, VIEWS, fetchAll, hasAirtableCreds } from "./lib/airtable";
+import { buildImageJobs, syncImages } from "./sync-images";
 
 // Env vars come from the host environment in CI, and from .env.local locally —
 // loaded by `node --env-file-if-exists=.env.local` in the npm scripts (see
 // package.json: `sync:content` / `prebuild`). Run with `npm run sync:content`.
 
-const TOKEN = process.env.AIRTABLE_TOKEN;
-const BASE_ID = process.env.AIRTABLE_BASE_ID;
-
-// Table names — override via env if they differ in the base.
-const TABLES = {
-  titles: process.env.AIRTABLE_TABLE_TITLES ?? "titles",
-  teams: process.env.AIRTABLE_TABLE_TEAMS ?? "teams",
-  players: process.env.AIRTABLE_TABLE_PLAYERS ?? "players",
-  officers: process.env.AIRTABLE_TABLE_OFFICERS ?? "officers",
-  sponsors: process.env.AIRTABLE_TABLE_SPONSORS ?? "sponsors",
-  featuredStory: process.env.AIRTABLE_TABLE_FEATUREDSTORY ?? "featuredstory",
-};
-
-// View names give deterministic ordering (the grid's top-down order) on tables
-// that lack an `order` field. Defaults to Airtable's standard "Grid view"; if a
-// table's view is renamed, the fetch falls back to unordered (with a warning) —
-// set the matching AIRTABLE_VIEW_* env var to the real view name.
-const DEFAULT_VIEW = "Grid view";
-const VIEWS = {
-  titles: process.env.AIRTABLE_VIEW_TITLES ?? DEFAULT_VIEW,
-  teams: process.env.AIRTABLE_VIEW_TEAMS ?? DEFAULT_VIEW,
-  officers: process.env.AIRTABLE_VIEW_OFFICERS ?? DEFAULT_VIEW,
-  sponsors: process.env.AIRTABLE_VIEW_SPONSORS ?? DEFAULT_VIEW,
-  featuredStory: process.env.AIRTABLE_VIEW_FEATUREDSTORY ?? DEFAULT_VIEW,
-};
-
-// === Airtable field names — ADJUST THESE TO MATCH THE BASE EXACTLY ===
-const F = {
-  // titles
-  titleName: "name",
-  titleSlug: "slug",
-  titleImage: "icon",
-  titleDescription: "description",
-  // teams
-  teamName: "team name",
-  teamTitleLink: "title", // link → titles
-  // players
-  playerIgn: "ign",
-  playerRealName: "real name",
-  playerTeamLink: "team", // link → teams
-  playerRoster: "roster", // single-select: main / sub
-  playerRole: "role",
-  playerOrder: "order",
-  playerBio: "bio",
-  playerImage: "image",
-  playerX: "x",
-  playerTwitch: "twitch",
-  playerInstagram: "instagram",
-  playerDiscord: "discord",
-  // officers
-  officerName: "name",
-  officerPosition: "position",
-  officerImage: "image",
-  // sponsors
-  sponsorName: "name",
-  sponsorWebsite: "website",
-  sponsorImage: "logo",
-  // featuredstory
-  storyTitle: "title",
-  storyBody: "body",
-  storyHref: "href",
-  storyImage: "image",
-  storyImageAlt: "image alt",
-};
-
 const PLACEHOLDER = "/knighto.png";
 const OUT_DIR = resolve(process.cwd(), "src/data/generated");
 
-type AirtableRecord = { id: string; fields: Record<string, unknown> };
 type Player = {
   ign: string;
   realName?: string;
@@ -96,53 +36,11 @@ type Player = {
 };
 type Team = { label: string; main: Player[]; subs: Player[] };
 
-if (!TOKEN || !BASE_ID) {
+if (!hasAirtableCreds()) {
   console.warn(
     "[sync-airtable] AIRTABLE_TOKEN/AIRTABLE_BASE_ID not set — skipping sync, using committed generated JSON."
   );
   process.exit(0);
-}
-
-async function fetchAll(table: string, view?: string): Promise<AirtableRecord[]> {
-  const records: AirtableRecord[] = [];
-  let offset: string | undefined;
-  do {
-    const url = new URL(
-      `https://api.airtable.com/v0/${BASE_ID}/${encodeURIComponent(table)}`
-    );
-    if (view) 
-    {
-      url.searchParams.set("view", view);
-    }
-    url.searchParams.set("pageSize", "100");
-    if (offset) 
-    {
-      url.searchParams.set("offset", offset);
-    }
-
-    let res = await fetch(url, { headers: { Authorization: `Bearer ${TOKEN}` } });
-
-    for (let attempt = 0; res.status === 429 && attempt < 5; attempt++) {
-      await new Promise((r) => setTimeout(r, 1000 * (attempt + 1)));
-      res = await fetch(url, { headers: { Authorization: `Bearer ${TOKEN}` } });
-    }
-
-    if (!res.ok) {
-      if (res.status === 422 && view) {
-        console.warn(
-          `[sync-airtable] view "${view}" not found on "${table}" — fetching ` +
-            `without a view (order may not match the grid). Set AIRTABLE_VIEW_* to fix.`
-        );
-        return fetchAll(table);
-      }
-      throw new Error(`Airtable "${table}" ${res.status}: ${await res.text()}`);
-    }
-    const json = (await res.json()) as { records: AirtableRecord[]; offset?: string };
-    records.push(...json.records);
-    offset = json.offset;
-  } while (offset);
-
-  return records;
 }
 
 const str = (v: unknown): string =>
@@ -150,7 +48,7 @@ const str = (v: unknown): string =>
 
 // Airtable *attachment* URLs expire ~2 hours after fetch; baked into the static
 // export they become broken images. Images belong in R2, with the R2 URL stored
-// in the Airtable URL field.
+// in the Airtable URL field (sync-images.ts does this automatically).
 const EXPIRING_URL = /airtableusercontent\.com|dl\.airtable\.com/i;
 
 // Synced URLs are written verbatim into href/src attributes, so only allow
@@ -161,7 +59,7 @@ function httpsUrl(v: unknown, field: string): string {
   if (EXPIRING_URL.test(url)) {
     console.warn(
       `[sync-airtable] "${field}" is an Airtable attachment URL that expires ~2h after sync — ` +
-        `upload the image to R2 and store the R2 URL in the field instead: ${url.slice(0, 80)}…`
+        `it should have been replaced by the image pipeline; check the R2_* env vars: ${url.slice(0, 80)}…`
     );
   }
   if (url.startsWith("https://")) return url;
@@ -218,9 +116,19 @@ async function main(): Promise<void> {
     fetchAll(TABLES.featuredStory, VIEWS.featuredStory),
   ]);
 
+  // Optimize new attachments into R2 and write the URLs back — both to
+  // Airtable and to the in-memory records the JSON below is generated from.
+  // The build must never fail on images; records keep their old URL field
+  // value (or the placeholder) and the next build retries.
+  try {
+    await syncImages(buildImageJobs({ titles, players, officers, sponsors, stories }));
+  } catch (e) {
+    console.warn("[sync-images] image pipeline failed — continuing with existing URLs:", e);
+  }
+
   // title record id -> slug
   const titleSlugById = new Map<string, string>();
-  for (const t of titles) 
+  for (const t of titles)
   {
     titleSlugById.set(t.id, str(t.fields[F.titleSlug]));
   }
@@ -245,18 +153,18 @@ async function main(): Promise<void> {
     const teamId = firstLink(p.fields[F.playerTeamLink]);
     const team = teamId ? teamById.get(teamId) : undefined;
 
-    if (!team || !team.titleSlug) 
+    if (!team || !team.titleSlug)
     {
       continue;
     }
 
-    if (!byGame.has(team.titleSlug)) 
+    if (!byGame.has(team.titleSlug))
     {
       byGame.set(team.titleSlug, new Map());
     }
 
     const teamsMap = byGame.get(team.titleSlug)!;
-    
+
     if (!teamsMap.has(team.label)) {
       teamsMap.set(team.label, { label: team.label, main: [], subs: [] });
     }
@@ -269,7 +177,7 @@ async function main(): Promise<void> {
       image: imageUrl(p.fields[F.playerImage], "player image"),
       socials: socials(p.fields),
     };
-    
+
     const isSub = str(p.fields[F.playerRoster]).toLowerCase().startsWith("sub");
     const bucket = teamsMap.get(team.label)!;
     (isSub ? bucket.subs : bucket.main).push(player);
