@@ -13,7 +13,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "sync:content": "node --env-file-if-exists=.env.local --import tsx scripts/sync-airtable.ts"
+    "sync:content": "node --env-file-if-exists=.env.local --import tsx scripts/sync-airtable.ts",
+    "sync:images": "node --env-file-if-exists=.env.local --import tsx scripts/sync-images.ts"
   },
   "dependencies": {
     "next": "16.1.6",
@@ -21,12 +22,14 @@
     "react-dom": "19.2.3"
   },
   "devDependencies": {
+    "@aws-sdk/client-s3": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "sharp": "^0.34",
     "tailwindcss": "^4",
     "tsx": "^4",
     "typescript": "^5"
