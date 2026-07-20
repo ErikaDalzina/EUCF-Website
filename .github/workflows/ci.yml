@@ -1,0 +1,36 @@
+# Runs on every PR targeting main and again after merge. No secrets needed:
+# without AIRTABLE_* env vars the prebuild sync exits 0 and the build uses the
+# committed src/data/generated/*.json. Content synced on Airtable-triggered
+# Cloudflare rebuilds is gated separately by scripts/lib/validate.ts.
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: eucf-website
+
+jobs:
+  ci:
+    name: lint / typecheck / test / build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: eucf-website/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
