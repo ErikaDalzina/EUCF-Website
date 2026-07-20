@@ -55,7 +55,7 @@ export type ImageJob = {
   label: string; // for logs
 };
 
-type Pending = { job: ImageJob; record: AirtableRecord; att: Attachment };
+export type Pending = { job: ImageJob; record: AirtableRecord; att: Attachment };
 
 type R2Env = {
   accountId: string;
@@ -65,7 +65,7 @@ type R2Env = {
   publicBaseUrl: string;
 };
 
-function r2Env(): R2Env | null {
+export function r2Env(): R2Env | null {
   const names = [
     "R2_ACCOUNT_ID",
     "R2_ACCESS_KEY_ID",
@@ -90,7 +90,7 @@ function r2Env(): R2Env | null {
   };
 }
 
-function firstAttachment(v: unknown): Attachment | null {
+export function firstAttachment(v: unknown): Attachment | null {
   if (!Array.isArray(v)) return null;
   const first = v[0];
   if (
@@ -107,7 +107,7 @@ function firstAttachment(v: unknown): Attachment | null {
 // An attachment being present is the whole "needs processing" signal — the URL
 // field's current value is irrelevant (a new attachment on a record with an
 // existing URL is a replacement and overwrites it).
-function pendingOf(job: ImageJob): Pending[] {
+export function pendingOf(job: ImageJob): Pending[] {
   const out: Pending[] = [];
   for (const record of job.records) {
     const att = firstAttachment(record.fields[job.attachmentField]);
@@ -136,7 +136,7 @@ const EXT_BY_TYPE: Record<string, string> = {
   "image/avif": "avif",
 };
 
-function originalExt(type: string, filename: string): string {
+export function originalExt(type: string, filename: string): string {
   const fromType = EXT_BY_TYPE[type.split(";")[0].trim()];
   if (fromType) return fromType;
   const fromName = /\.([a-z0-9]+)$/i.exec(filename)?.[1]?.toLowerCase();
@@ -179,7 +179,7 @@ async function optimize(
 
 // Key = hash of the *processed* bytes: identical outputs dedupe to one object,
 // and a changed image gets a new key (old URLs in deployed builds keep working).
-const objectKey = (data: Buffer, ext: string): string =>
+export const objectKey = (data: Buffer, ext: string): string =>
   `images/${createHash("sha256").update(data).digest("hex")}.${ext}`;
 
 async function ensureUploaded(
@@ -210,7 +210,7 @@ async function ensureUploaded(
   return "uploaded";
 }
 
-async function mapLimit<T, R>(
+export async function mapLimit<T, R>(
   items: T[],
   limit: number,
   fn: (item: T) => Promise<R>

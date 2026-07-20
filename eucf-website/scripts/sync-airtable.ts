@@ -17,93 +17,21 @@
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { F, TABLES, VIEWS, fetchAll, hasAirtableCreds } from "./lib/airtable";
+import { groupPlayers, httpsUrl, imageUrl, str } from "./lib/transforms";
+import { validateContent } from "./lib/validate";
 import { buildImageJobs, syncImages } from "./sync-images";
 
 // Env vars come from the host environment in CI, and from .env.local locally —
 // loaded by `node --env-file-if-exists=.env.local` in the npm scripts (see
 // package.json: `sync:content` / `prebuild`). Run with `npm run sync:content`.
 
-const PLACEHOLDER = "/knighto.png";
 const OUT_DIR = resolve(process.cwd(), "src/data/generated");
-
-type Player = {
-  ign: string;
-  realName?: string;
-  role?: string;
-  bio?: string;
-  image: string;
-  socials?: Record<string, string>;
-};
-type Team = { label: string; main: Player[]; subs: Player[] };
 
 if (!hasAirtableCreds()) {
   console.warn(
     "[sync-airtable] AIRTABLE_TOKEN/AIRTABLE_BASE_ID not set — skipping sync, using committed generated JSON."
   );
   process.exit(0);
-}
-
-const str = (v: unknown): string =>
-  typeof v === "string" ? v : v == null ? "" : String(v);
-
-// Airtable *attachment* URLs expire ~2 hours after fetch; baked into the static
-// export they become broken images. Images belong in R2, with the R2 URL stored
-// in the Airtable URL field (sync-images.ts does this automatically).
-const EXPIRING_URL = /airtableusercontent\.com|dl\.airtable\.com/i;
-
-// Synced URLs are written verbatim into href/src attributes, so only allow
-// https: (this also blocks javascript:/data: schemes typed into the base).
-function httpsUrl(v: unknown, field: string): string {
-  const url = str(v).trim();
-  if (!url) return "";
-  if (EXPIRING_URL.test(url)) {
-    console.warn(
-      `[sync-airtable] "${field}" is an Airtable attachment URL that expires ~2h after sync — ` +
-        `it should have been replaced by the image pipeline; check the R2_* env vars: ${url.slice(0, 80)}…`
-    );
-  }
-  if (url.startsWith("https://")) return url;
-  console.warn(`[sync-airtable] dropping "${field}" — not an https URL: ${url.slice(0, 80)}`);
-  return "";
-}
-
-// Image field may be a URL string (an R2 URL) or an attachment array.
-function imageUrl(v: unknown, field: string): string {
-  let raw = "";
-  if (typeof v === "string") {
-    raw = v.trim();
-  } else if (Array.isArray(v)) {
-    const first = v[0];
-    if (
-      first &&
-      typeof first === "object" &&
-      "url" in first &&
-      typeof (first as { url: unknown }).url === "string"
-    )
-    {
-      raw = (first as { url: string }).url;
-    }
-  }
-
-  if (!raw) return PLACEHOLDER;
-  if (raw.startsWith("/")) return raw; // site-relative, served from public/
-  return httpsUrl(raw, field) || PLACEHOLDER;
-}
-
-const firstLink = (v: unknown): string | undefined =>
-  Array.isArray(v) && typeof v[0] === "string" ? (v[0] as string) : undefined;
-
-function socials(f: Record<string, unknown>): Record<string, string> | undefined {
-  const s: Record<string, string> = {};
-  const add = (key: string, field: string) => {
-    const url = httpsUrl(f[field], `player ${key}`);
-    if (url) s[key] = url;
-  };
-  add("x", F.playerX);
-  add("twitch", F.playerTwitch);
-  add("instagram", F.playerInstagram);
-  add("discord", F.playerDiscord);
-  return Object.keys(s).length ? s : undefined;
 }
 
 async function main(): Promise<void> {
@@ -126,69 +54,7 @@ async function main(): Promise<void> {
     console.warn("[sync-images] image pipeline failed — continuing with existing URLs:", e);
   }
 
-  // title record id -> slug
-  const titleSlugById = new Map<string, string>();
-  for (const t of titles)
-  {
-    titleSlugById.set(t.id, str(t.fields[F.titleSlug]));
-  }
-
-  // team record id -> { titleSlug, label }
-  const teamById = new Map<string, { titleSlug: string; label: string }>();
-  for (const tm of teams) {
-    const titleId = firstLink(tm.fields[F.teamTitleLink]);
-    teamById.set(tm.id, {
-      titleSlug: titleId ? titleSlugById.get(titleId) ?? "" : "",
-      label: str(tm.fields[F.teamName]),
-    });
-  }
-
-  // group players: title slug -> team label -> { main, subs }, sorted by `order`
-  const byGame = new Map<string, Map<string, Team>>();
-  const sortedPlayers = [...players].sort(
-    (a, b) => Number(a.fields[F.playerOrder] ?? 0) - Number(b.fields[F.playerOrder] ?? 0)
-  );
-
-  for (const p of sortedPlayers) {
-    const teamId = firstLink(p.fields[F.playerTeamLink]);
-    const team = teamId ? teamById.get(teamId) : undefined;
-
-    if (!team || !team.titleSlug)
-    {
-      continue;
-    }
-
-    if (!byGame.has(team.titleSlug))
-    {
-      byGame.set(team.titleSlug, new Map());
-    }
-
-    const teamsMap = byGame.get(team.titleSlug)!;
-
-    if (!teamsMap.has(team.label)) {
-      teamsMap.set(team.label, { label: team.label, main: [], subs: [] });
-    }
-
-    const player: Player = {
-      ign: str(p.fields[F.playerIgn]),
-      realName: str(p.fields[F.playerRealName]) || undefined,
-      role: str(p.fields[F.playerRole]) || undefined,
-      bio: str(p.fields[F.playerBio]) || undefined,
-      image: imageUrl(p.fields[F.playerImage], "player image"),
-      socials: socials(p.fields),
-    };
-
-    const isSub = str(p.fields[F.playerRoster]).toLowerCase().startsWith("sub");
-    const bucket = teamsMap.get(team.label)!;
-    (isSub ? bucket.subs : bucket.main).push(player);
-  }
-  // Order teams within each game by label so "… A Team" comes before "… B Team".
-  const playersOut: Record<string, Team[]> = {};
-  for (const [slug, teamsMap] of byGame) {
-    playersOut[slug] = [...teamsMap.values()].sort((a, b) =>
-      a.label.localeCompare(b.label)
-    );
-  }
+  const playersOut = groupPlayers(titles, teams, players);
 
   const titlesOut = titles.map((t) => ({
     name: str(t.fields[F.titleName]),
@@ -246,6 +112,24 @@ async function main(): Promise<void> {
   );
   if (allPlayers.length && allPlayers.every((p) => !p.ign)) {
     console.warn(`[sync-airtable] every player ign is empty — check F.playerIgn ("${F.playerIgn}").`);
+  }
+
+  // Airtable-webhook rebuilds never run CI, so bad content is gated here:
+  // failing the build keeps the last good deploy live, and the reasons show up
+  // in the Cloudflare build log. No fallback to committed JSON — the fetch
+  // succeeded, the data itself is wrong, and the fix belongs in Airtable.
+  const validationErrors = validateContent({
+    titles: titlesOut,
+    officers: officersOut,
+    sponsors: sponsorsOut,
+    featuredstory: storiesOut,
+    players: playersOut,
+  });
+  if (validationErrors.length) {
+    for (const err of validationErrors) {
+      console.error(`[sync-airtable] content validation failed: ${err}`);
+    }
+    process.exit(1);
   }
 
   mkdirSync(OUT_DIR, { recursive: true });
