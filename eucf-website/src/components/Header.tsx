@@ -21,16 +21,14 @@ export default function Header() {
         className="flex items-center justify-between px-4 md:px-6 h-19"
         aria-label="Primary"
       >
-        <div className="relative w-32 h-10 md:w-40 md:h-12 shrink-0">
-          <Link href="/">
-            <Image
-              src="/esportsLogo.png"
-              alt="EUCF Esports Logo"
-              fill
-              className="object-contain object-left"
-            />
-          </Link>
-        </div>
+        <Link href="/" className="relative block w-32 h-10 md:w-40 md:h-12 shrink-0">
+          <Image
+            src="/esportsLogo.png"
+            alt="EUCF Esports Logo"
+            fill
+            className="object-contain object-left"
+          />
+        </Link>
 
         {/* Desktop nav links */}
         <div className="hidden md:flex items-center gap-6 lg:gap-8">

@@ -13,7 +13,7 @@ export default function Footer() {
                 alt="UCF Logo"
                 width={150}
                 height={150}
-                className="object-contain"
+                className="h-37.5 w-37.5 object-contain"
               />
             </div>
             <h2 className="text-xl font-bold leading-snug text-left">
