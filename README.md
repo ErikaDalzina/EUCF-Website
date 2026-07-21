@@ -95,9 +95,11 @@ not garbage-collected (the whole library is a few tens of MB against R2's free
 
 ## License
 
-Code is licensed under the **MIT License** (see [LICENSE](LICENSE)).
+© 2026 Esports at UCF (EUCF). **All Rights Reserved.** This project is
+proprietary — the source code is **not** offered under an open-source license
+(see [LICENSE](LICENSE)).
 
-Brand assets and third-party logos are **not** covered by the MIT grant — see
-[NOTICE.md](NOTICE.md) for details.
+Third-party trademarks, logos, and roster personal data are **not** owned by EUCF
+and are not covered by this claim — see [NOTICE.md](NOTICE.md).
 
-© 2026 Esports at UCF (EUCF). Developed by Erika D'alzina and Tulio Contramaestre.
+Developed by Erika D'alzina and Tulio Contramaestre.
