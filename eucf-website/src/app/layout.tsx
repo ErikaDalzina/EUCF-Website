@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     template: "%s | EUCF",
   },
   description: SITE_DESCRIPTION,
-  authors: [{ name: "Tulio Contramaestre" }, { name: "Erika D'alzina" }],
+  authors: [{ name: "Tulio Contramaestre" }, { name: "Erika D'Alzina" }],
   openGraph: {
     title: SITE_NAME,
     description: SITE_DESCRIPTION,

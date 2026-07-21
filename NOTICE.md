@@ -2,7 +2,7 @@
 
 The original source code, styling, layout, design, and original written content of
 this website — together with the "Esports at UCF" / "EUCF" club identity, name, and
-logos — are **Copyright © 2026 Esports at UCF (EUCF)**. Developed by Erika D'alzina
+logos — are **Copyright © 2026 Esports at UCF (EUCF)**. Developed by Erika D'Alzina
 and Tulio Contramaestre. **All Rights Reserved.**
 
 No part of this original work — including the underlying code, styling, and

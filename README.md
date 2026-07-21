@@ -102,4 +102,4 @@ proprietary — the source code is **not** offered under an open-source license
 Third-party trademarks, logos, and roster personal data are **not** owned by EUCF
 and are not covered by this claim — see [NOTICE.md](NOTICE.md).
 
-Developed by Erika D'alzina and Tulio Contramaestre.
+Developed by Erika D'Alzina and Tulio Contramaestre.
