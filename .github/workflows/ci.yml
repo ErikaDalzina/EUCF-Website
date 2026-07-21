@@ -1,14 +1,15 @@
-# Runs on every PR targeting main and again after merge. No secrets needed:
-# without AIRTABLE_* env vars the prebuild sync exits 0 and the build uses the
-# committed src/data/generated/*.json. Content synced on Airtable-triggered
-# Cloudflare rebuilds is gated separately by scripts/lib/validate.ts.
+# Runs on every push to dev and main, and on PRs targeting either. No secrets
+# needed: without AIRTABLE_* env vars the prebuild sync exits 0 and the build
+# uses the committed src/data/generated/*.json. Content synced on
+# Airtable-triggered Cloudflare rebuilds is gated separately by
+# scripts/lib/validate.ts.
 name: CI
 
 on:
   pull_request:
-    branches: [main]
+    branches: [main, dev]
   push:
-    branches: [main]
+    branches: [main, dev]
 
 concurrency:
   group: ci-${{ github.ref }}
