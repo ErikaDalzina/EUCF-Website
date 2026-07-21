@@ -1,28 +1,40 @@
-# Notice
+# Legal Notice & Copyright
 
-Copyright © 2026 Esports at UCF (EUCF). Developed by Erika D'alzina and Tulio Contramaestre.
-Code is licensed under the MIT License (see [LICENSE](LICENSE)).
+The original source code, styling, layout, design, and original written content of
+this website — together with the "Esports at UCF" / "EUCF" club identity, name, and
+logos — are **Copyright © 2026 Esports at UCF (EUCF)**. Developed by Erika D'alzina
+and Tulio Contramaestre. **All Rights Reserved.**
 
-## Scope of the MIT License
+No part of this original work — including the underlying code, styling, and
+architecture — may be reproduced, redistributed, or cloned without explicit written
+permission from the club leadership and developers.
 
-The MIT License applies to the **original source code** in this repository only.
-It does **not** grant any rights to the brands, logos, names, or other
-trademarked or copyrighted assets referenced or bundled here. Those remain the
-property of their respective owners and are used only for identification,
+## Third-Party Trademarks & Assets
+
+This repository also displays trademarked and copyrighted assets that are **not**
+owned by EUCF. The club claims **no** copyright or ownership over these; they remain
+the property of their respective owners and are shown only for identification,
 roster, or sponsorship purposes:
 
-- **Esports at UCF (EUCF) marks** — the "Esports at UCF" / "EUCF" name and logos.
-- **University of Central Florida branding** — the UCF name and logos.
-- **Game-title logos** — Valorant, League of Legends, Counter-Strike 2,
-  Apex Legends, Overwatch, Rainbow Six Siege, Rocket League, Splatoon,
-  Super Smash Bros. Ultimate, and Marvel Rivals are trademarks of their
-  respective publishers.
+- **University of Central Florida branding** — the UCF name, letters, and
+  academic/athletic logos.
+- **Game-title logos** — Valorant, League of Legends, Counter-Strike 2, Apex
+  Legends, Overwatch, Rainbow Six Siege, Rocket League, Splatoon, Super Smash Bros.
+  Ultimate, and Marvel Rivals are trademarks of their respective publishers.
 - **Sponsor logos** — e.g. Monster Energy, used with the sponsor's permission.
+- **Social-platform icons** — Instagram, X, Discord, TikTok, Twitch, and similar
+  marks belong to their respective platforms and are used only to link to the
+  club's official accounts.
 
-Reusing this code under the MIT License does **not** grant permission to use any
-of the above marks, nor to reproduce club branding or imply endorsement.
+These marks are displayed nominatively (to identify the games we compete in, our
+sponsors, and our social channels); their inclusion does not imply endorsement by,
+or affiliation beyond the stated relationship with, those owners.
 
-## Personal data
+## Personal Data & Member Privacy
 
-Player and officer names, photos, and social links are published as part of the
-club's public roster with the consent of the individuals involved.
+Player and officer names, photographs, avatars, and social media handles are
+published exclusively as a public roster with the explicit consent of the
+individuals involved.
+
+Visitors and developers are strictly prohibited from scraping, harvesting, copying,
+or re-hosting any member information or imagery found in this repository.
