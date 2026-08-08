@@ -8,6 +8,10 @@ Built with [Next.js](https://nextjs.org) (static export) and styled with
 Tailwind CSS. Roster and content data is synced from Airtable at build time into
 `eucf-website/src/data/generated/*.json` by `eucf-website/scripts/sync-airtable.ts`.
 
+> Editing rosters or other content in Airtable? See the
+> **[Content Runbook](docs/RUNBOOK.md)** — field names, what fails a build, and
+> the season changeover process.
+
 ## Getting started
 
 ```bash
@@ -40,10 +44,12 @@ Required variables:
 
 Then sync content with `npm run sync:content` (also runs automatically on `npm run build`).
 
-> **Windows note:** always run `npm install` from **PowerShell, not WSL** —
-> `node_modules` must stay Windows-native (esbuild/sharp ship per-platform
-> binaries). If it was ever installed cross-platform by mistake, fix with
-> `Remove-Item -Recurse node_modules; npm ci` in PowerShell.
+> **Windows note:** run npm commands from a **Windows shell** — PowerShell, Git
+> Bash, and cmd all work. Avoid **WSL**: `node_modules` must stay Windows-native
+> (esbuild/sharp ship per-platform binaries) and Linux-side Node can't run them.
+> If it was ever installed from WSL by mistake, delete `node_modules` and re-run
+> `npm ci` from a Windows shell — `Remove-Item -Recurse node_modules; npm ci`
+> (PowerShell) or `rm -rf node_modules && npm ci` (Git Bash).
 
 ## Images (Airtable → R2 pipeline)
 

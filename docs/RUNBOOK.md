@@ -1,0 +1,263 @@
+# EUCF Website — Content Runbook
+
+For officers and anyone editing the site's content. Developer setup lives in the
+[README](../README.md).
+
+## What publishes the site
+
+Airtable is the CMS. At build time, `eucf-website/scripts/sync-airtable.ts`
+pulls every table into `eucf-website/src/data/generated/*.json`, and the site is
+built as static HTML and served by Cloudflare Pages.
+
+Nothing is read from Airtable while people are browsing the site. **A change in
+Airtable is only live after a rebuild.**
+
+## Airtable field contract
+
+> **Column names are code.** Every field below is looked up by its exact name in
+> `F` in [`eucf-website/scripts/lib/airtable.ts`](../eucf-website/scripts/lib/airtable.ts).
+> Renaming a column in Airtable without changing that file does not cause an
+> obvious error — it makes the affected content silently disappear. If a name
+> really must change, change it in both places, or set the matching
+> `AIRTABLE_TABLE_*` / `AIRTABLE_VIEW_*` environment variable.
+>
+> Adding new columns is always safe. The sync ignores anything it isn't told to read.
+
+### `titles` — one row per game
+
+| Field | Type | What it does |
+| --- | --- | --- |
+| `name` | text | Display name, e.g. "Marvel Rivals" |
+| `slug` | text | The URL: `/titles/<slug>`. Must be unique. Changing it changes the page's address and breaks existing links |
+| `description` | text | Blurb under the title heading |
+| `icon` | text / URL | Title logo. Filled in automatically from `icon upload` |
+| `icon upload` | attachment | Drop a new logo here — see [Images](../README.md#images-airtable--r2-pipeline) |
+
+### `teams` — one row per roster
+
+| Field | Type | What it does |
+| --- | --- | --- |
+| `team name` | text | The heading above the roster, e.g. "Marvel Rivals A Team" |
+| `title` | link → `titles` | Which game page this team appears on |
+
+Two things to know:
+
+- **Rosters are grouped by `team name` as text.** Two team rows with the same
+  name under the same title merge into a single roster on the site.
+- **If `title` is empty, every player on that team disappears from the site.**
+  The team has no page to appear on.
+
+### `players` — one row per person
+
+| Field | Type | What it does |
+| --- | --- | --- |
+| `ign` | text | **Required.** The name shown on the card |
+| `real name` | text | Optional, shown in the pop-up |
+| `main teams` | link → `teams`, **multiple** | Every team where they are a main roster player |
+| `sub teams` | link → `teams`, **multiple** | Every team where they are a substitute |
+| `role` | text | Optional, e.g. "Duelist" |
+| `order` | number | Sort position within a roster. Missing counts as `0` |
+| `bio` | text | Optional, shown in the pop-up |
+| `image` | text / URL | Player photo. Filled in automatically from `image upload` |
+| `image upload` | attachment | Drop a new photo here |
+| `x`, `twitch`, `instagram`, `discord` | URL | Optional. **Must start with `https://`** or they are dropped |
+
+How main vs sub is decided: **purely by which field the link is in.** There is no
+separate "main or sub" column. A player appears on every team listed across both
+fields, and can be a main on one team and a sub on another.
+
+### `officers`, `sponsors`, `featuredstory`
+
+| Table | Fields |
+| --- | --- |
+| `officers` | `name`, `position`, `image`, `image upload` |
+| `sponsors` | `name`, `website` (https only), `logo`, `logo upload` |
+| `featuredstory` | `title`, `body`, `href` (https only), `image`, `image upload`, `image alt` |
+
+### Views
+
+Every table except `players` is read through a view named **`Grid view`**, which
+is what gives them their top-to-bottom order. Renaming that view doesn't break
+the build, but the order becomes arbitrary (a warning appears in the build log).
+
+`players` is read without a view — its order comes from the `order` field
+instead, so it doesn't matter how the grid is sorted.
+
+## What fails the build, and why that's safe
+
+Before anything is published, the content is checked by
+[`validate.ts`](../eucf-website/scripts/lib/validate.ts). If any of these are
+true, the build stops:
+
+- A title has no `name` or no `slug`
+- Two titles share the same `slug`
+- The `titles` table is empty
+- A team has no `team name`
+- A player has no `ign`
+- **Two players with the same `ign` on the same team**
+- **Player rows exist in Airtable but none of them landed on any team**
+- Any image, logo, `website`, or `href` that isn't `https://` or a `/path`
+- A roster grouped under a slug with no matching title
+
+**A failed build changes nothing.** The site that's currently live stays live,
+exactly as it is. There is no half-published state, and nothing to undo — fix
+the problem in Airtable and publish again. The reason is printed in the
+Cloudflare build log, prefixed with `content validation failed:`.
+
+Two of these deserve a note:
+
+**"Two players with the same ign on the same team"** — almost always the intake
+form submitted twice by the same person. Delete the extra row. The same IGN on
+*different* teams is fine and will never be flagged: that's either one player on
+two rosters, or two different people who picked similar handles.
+
+**"Player rows exist but none landed on any team"** — this is not the same as an
+empty roster. It means the links stopped resolving: a renamed column, or teams
+missing their `title` link. Check `main teams` / `sub teams` on `players`, and
+`title` on `teams`.
+
+**An empty roster is not an error.** A title with no players publishes normally
+and shows "Roster coming soon — check back later!" on its page. That's expected
+for a new game, or during intake after a season changeover.
+
+## Editing content
+
+**Add a new player** — send them the intake form, or add a row to `players`
+directly. At minimum they need an `ign` and at least one entry in `main teams`
+or `sub teams`.
+
+**A returning player** — **edit their existing row. Do not send them the form
+again.** Re-submitting creates a second row, which produces a duplicate card and
+fails the build. Editing in place also keeps their bio, photo, and socials
+instead of making them re-enter everything.
+
+**Move a player between teams** — change their `main teams` / `sub teams` links.
+Nothing else needs updating.
+
+**Put a player on two teams** — add both teams to `main teams`. If they're a main
+on one and a sub on the other, put each team in the matching field.
+
+**Change someone from main to sub** — move the team link from `main teams` to
+`sub teams`.
+
+**Remove a player** — delete the row, or clear both team links. Either removes
+them from the site; clearing the links keeps their record around.
+
+**Change a photo** — drag a new image into the `image upload` field. See
+[Images](../README.md#images-airtable--r2-pipeline) in the README for how the
+pipeline works and what happens to the original.
+
+## Season changeover
+
+Airtable's free tier caps the base at 1,000 records, so old rosters can't
+accumulate there. **Git is the archive** — every sync commits the generated JSON,
+so each season is preserved permanently in the repo.
+
+**Archive before you clear anything:**
+
+```bash
+cd eucf-website
+npm run sync:content
+git add src/data/generated/
+git commit -m "chore: snapshot 2026-27 roster"
+git tag roster-2026-27
+git push origin main --tags
+```
+
+To read a past season back:
+
+```bash
+git show roster-2026-27:eucf-website/src/data/generated/players.json
+```
+
+Then, in order:
+
+1. Delete the rows for players who have left.
+2. Edit returning players in place — update their `main teams` / `sub teams`.
+3. Send the intake form to new members only.
+
+Between clearing and the first submissions, the site will show "Roster coming
+soon" on the affected pages. That's expected and publishes fine.
+
+> **Windows note:** any Windows shell works — PowerShell, Git Bash, or cmd.
+> Avoid **WSL**: `node_modules` holds Windows-native binaries (esbuild, sharp),
+> so Linux-side Node can't run them. See the
+> [README](../README.md#environment-setup).
+
+## Publishing
+
+> Written ahead of the Cloudflare Pages setup. The steps are correct in shape,
+> but check the exact button and menu names against the dashboard the first time
+> through, and correct this page as you go.
+
+Editing Airtable does **not** change the site. The site is rebuilt from scratch
+each time you publish, and whatever is in Airtable at that moment is what ships.
+
+To publish:
+
+1. Make and review all your changes in Airtable.
+2. Open the **`deploy`** table and tick the **`publish`** checkbox.
+3. The checkbox unticks itself once the build has been triggered — that's your
+   confirmation the request went through, not that the build finished.
+4. Wait a few minutes, then hard-refresh the site and check your change.
+
+A few things worth knowing:
+
+- **Publishing is all-or-nothing.** Every pending change in Airtable goes live
+  together. There's no way to publish one team and hold back another — stage
+  edits so the base is always in a state you're happy to ship.
+- **Ticking the box again starts another build.** If nothing seems to be
+  happening, work through the section below rather than ticking repeatedly.
+- **Code changes publish separately.** Anything merged to the `main` branch
+  rebuilds the site on its own; you don't need to publish for that.
+
+## When a publish doesn't go through
+
+Work down this list in order — each step tells you which system to look at next.
+
+**1. Did the `publish` checkbox untick itself?**
+If it's still ticked, the Airtable automation never ran. Open **Automations**,
+find the publish automation, and check its **run history** for the failed run
+and its error.
+
+**2. Did a new deployment appear in Cloudflare Pages?**
+If the checkbox cleared but no deployment started, the automation ran but the
+request to Cloudflare failed. The error will be on the script step in that same
+run history — most likely the deploy hook URL is wrong or was regenerated.
+
+**3. Did the deployment fail?**
+Open the build log and search for `content validation failed:`. If it's there,
+this is a **content problem, not a site problem** — the message names the table,
+the team, and usually the player. Fix it in Airtable and publish again. See
+[What fails the build](#what-fails-the-build-and-why-thats-safe).
+
+**Nothing was published, and the live site is untouched.** A failed build never
+takes the site down.
+
+**4. Build succeeded but your change isn't visible?**
+Hard-refresh the page first. Then confirm you edited the right record, and that
+the field you changed is one the sync actually reads — see
+[Airtable field contract](#airtable-field-contract). A field the sync ignores
+will never appear on the site no matter how many times you publish.
+
+**5. Rosters show `The Goat`, `Player2`, `Player3`…?**
+Those are placeholder names. The build couldn't reach Airtable and fell back to
+the sample data committed in the repo. The Airtable environment variables on the
+Cloudflare Pages project are missing, wrong, or the token expired. This one needs
+a developer.
+
+## Rolling back
+
+If a publish put something wrong on the site, you don't need to fix Airtable
+first — you can put the previous version back immediately.
+
+In the Cloudflare Pages project, open **Deployments**, find the last deployment
+you know was good, and use its **Rollback** action. It takes effect right away;
+no rebuild runs, and nothing in Airtable or the repo changes.
+
+> **Rolling back does not fix Airtable.** The site reverts, but the bad content
+> is still sitting in the base — so the *next* publish, by anyone, ships it
+> again. Always correct the content in Airtable too, then publish normally.
+
+You don't need to roll back a **failed** build. A build that fails never
+replaces the live site, so there's nothing to undo.
