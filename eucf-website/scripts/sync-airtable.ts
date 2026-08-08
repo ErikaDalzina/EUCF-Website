@@ -104,7 +104,8 @@ async function main(): Promise<void> {
   if (players.length && Object.keys(playersOut).length === 0) {
     console.warn(
       `[sync-airtable] ${players.length} players fetched but none grouped into a game — ` +
-        `check F.playerTeamLink ("${F.playerTeamLink}") / F.teamTitleLink ("${F.teamTitleLink}").`
+        `check F.playerMainTeams ("${F.playerMainTeams}") / F.playerSubTeams ` +
+        `("${F.playerSubTeams}") / F.teamTitleLink ("${F.teamTitleLink}").`
     );
   }
   const allPlayers = Object.values(playersOut).flatMap((teamList) =>

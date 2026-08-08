@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { F, type AirtableRecord } from "../../scripts/lib/airtable";
 import {
   PLACEHOLDER,
+  allLinks,
   firstLink,
   groupPlayers,
   httpsUrl,
@@ -106,6 +107,22 @@ describe("firstLink", () => {
   });
 });
 
+describe("allLinks", () => {
+  it("returns every string in the array", () => {
+    expect(allLinks(["rec1", "rec2"])).toEqual(["rec1", "rec2"]);
+  });
+
+  it("drops non-string entries", () => {
+    expect(allLinks(["rec1", 42, null, "rec2"])).toEqual(["rec1", "rec2"]);
+  });
+
+  it("returns an empty array for empty arrays and non-arrays", () => {
+    expect(allLinks([])).toEqual([]);
+    expect(allLinks("rec1")).toEqual([]);
+    expect(allLinks(undefined)).toEqual([]);
+  });
+});
+
 describe("socials", () => {
   it("keeps only present https links", () => {
     const s = socials({
@@ -149,26 +166,22 @@ describe("groupPlayers", () => {
       [
         player("p1", {
           [F.playerIgn]: "Bravo",
-          [F.playerTeamLink]: ["tm2"],
-          [F.playerRoster]: "main",
+          [F.playerMainTeams]: ["tm2"],
           [F.playerOrder]: 2,
         }),
         player("p2", {
           [F.playerIgn]: "Alpha",
-          [F.playerTeamLink]: ["tm2"],
-          [F.playerRoster]: "main",
+          [F.playerMainTeams]: ["tm2"],
           [F.playerOrder]: 1,
         }),
         player("p3", {
           [F.playerIgn]: "Subby",
-          [F.playerTeamLink]: ["tm2"],
-          [F.playerRoster]: "Sub",
+          [F.playerSubTeams]: ["tm2"],
           [F.playerOrder]: 3,
         }),
         player("p4", {
           [F.playerIgn]: "Benchwarmer",
-          [F.playerTeamLink]: ["tm1"],
-          [F.playerRoster]: "substitute",
+          [F.playerSubTeams]: ["tm1"],
         }),
       ]
     );
@@ -176,11 +189,92 @@ describe("groupPlayers", () => {
     expect(Object.keys(out)).toEqual(["valorant"]);
     // Teams sorted by label: A Team before B Team.
     expect(out.valorant.map((t) => t.label)).toEqual(["VAL A Team", "VAL B Team"]);
-    // Main sorted by order; "Sub"/"substitute" prefixes land in subs.
+    // Main sorted by order; "sub teams" links land in subs.
     expect(out.valorant[0].main.map((p) => p.ign)).toEqual(["Alpha", "Bravo"]);
     expect(out.valorant[0].subs.map((p) => p.ign)).toEqual(["Subby"]);
     expect(out.valorant[1].main).toEqual([]);
     expect(out.valorant[1].subs.map((p) => p.ign)).toEqual(["Benchwarmer"]);
+  });
+
+  it("fans a player out across teams in different titles", () => {
+    const out = groupPlayers(
+      [title("t1", "marvel-rivals"), title("t2", "overwatch")],
+      [team("tm1", "MR A Team", "t1"), team("tm2", "OW A Team", "t2")],
+      [player("p1", { [F.playerIgn]: "Ghost", [F.playerMainTeams]: ["tm1", "tm2"] })]
+    );
+
+    expect(out["marvel-rivals"][0].main.map((p) => p.ign)).toEqual(["Ghost"]);
+    expect(out.overwatch[0].main.map((p) => p.ign)).toEqual(["Ghost"]);
+  });
+
+  it("fans a player out across two teams in the same title", () => {
+    const out = groupPlayers(
+      [title("t1", "valorant")],
+      [team("tm1", "VAL A Team", "t1"), team("tm2", "VAL B Team", "t1")],
+      [player("p1", { [F.playerIgn]: "Ghost", [F.playerMainTeams]: ["tm1", "tm2"] })]
+    );
+
+    expect(out.valorant.map((t) => t.label)).toEqual(["VAL A Team", "VAL B Team"]);
+    expect(out.valorant[0].main.map((p) => p.ign)).toEqual(["Ghost"]);
+    expect(out.valorant[1].main.map((p) => p.ign)).toEqual(["Ghost"]);
+  });
+
+  it("tracks main vs sub per team, not per player", () => {
+    const out = groupPlayers(
+      [title("t1", "marvel-rivals"), title("t2", "overwatch")],
+      [team("tm1", "MR A Team", "t1"), team("tm2", "OW A Team", "t2")],
+      [
+        player("p1", {
+          [F.playerIgn]: "Ghost",
+          [F.playerMainTeams]: ["tm1"],
+          [F.playerSubTeams]: ["tm2"],
+        }),
+      ]
+    );
+
+    expect(out["marvel-rivals"][0].main.map((p) => p.ign)).toEqual(["Ghost"]);
+    expect(out["marvel-rivals"][0].subs).toEqual([]);
+    expect(out.overwatch[0].main).toEqual([]);
+    expect(out.overwatch[0].subs.map((p) => p.ign)).toEqual(["Ghost"]);
+  });
+
+  it("keeps a player on the teams that resolve when another link is broken", () => {
+    const out = groupPlayers(
+      [title("t1", "valorant")],
+      [team("tm1", "VAL A Team", "t1")],
+      [player("p1", { [F.playerIgn]: "Ghost", [F.playerMainTeams]: ["tmGone", "tm1"] })]
+    );
+
+    expect(out.valorant[0].main.map((p) => p.ign)).toEqual(["Ghost"]);
+  });
+
+  it("lists a player once per team when the same team is picked as main and sub", () => {
+    const out = groupPlayers(
+      [title("t1", "valorant")],
+      [team("tm1", "VAL A Team", "t1")],
+      [
+        player("p1", {
+          [F.playerIgn]: "Ghost",
+          [F.playerMainTeams]: ["tm1"],
+          [F.playerSubTeams]: ["tm1"],
+        }),
+      ]
+    );
+
+    // Main wins — the main links are resolved first.
+    expect(out.valorant[0].main.map((p) => p.ign)).toEqual(["Ghost"]);
+    expect(out.valorant[0].subs).toEqual([]);
+  });
+
+  it("lists a player once when two team records share a label in one title", () => {
+    const out = groupPlayers(
+      [title("t1", "valorant")],
+      [team("tm1", "VAL A Team", "t1"), team("tm2", "VAL A Team", "t1")],
+      [player("p1", { [F.playerIgn]: "Ghost", [F.playerMainTeams]: ["tm1", "tm2"] })]
+    );
+
+    expect(out.valorant).toHaveLength(1);
+    expect(out.valorant[0].main.map((p) => p.ign)).toEqual(["Ghost"]);
   });
 
   it("coerces string order values numerically and treats missing order as 0", () => {
@@ -188,9 +282,9 @@ describe("groupPlayers", () => {
       [title("t1", "ow")],
       [team("tm1", "OW", "t1")],
       [
-        player("p1", { [F.playerIgn]: "Ten", [F.playerTeamLink]: ["tm1"], [F.playerOrder]: "10" }),
-        player("p2", { [F.playerIgn]: "Two", [F.playerTeamLink]: ["tm1"], [F.playerOrder]: "2" }),
-        player("p3", { [F.playerIgn]: "Zero", [F.playerTeamLink]: ["tm1"] }),
+        player("p1", { [F.playerIgn]: "Ten", [F.playerMainTeams]: ["tm1"], [F.playerOrder]: "10" }),
+        player("p2", { [F.playerIgn]: "Two", [F.playerMainTeams]: ["tm1"], [F.playerOrder]: "2" }),
+        player("p3", { [F.playerIgn]: "Zero", [F.playerMainTeams]: ["tm1"] }),
       ]
     );
     expect(out.ow[0].main.map((p) => p.ign)).toEqual(["Zero", "Two", "Ten"]);
@@ -202,9 +296,9 @@ describe("groupPlayers", () => {
       [team("tm1", "Orphans", "t2"), team("tm2", "No Title")],
       [
         player("p1", { [F.playerIgn]: "NoTeam" }),
-        player("p2", { [F.playerIgn]: "EmptySlug", [F.playerTeamLink]: ["tm1"] }),
-        player("p3", { [F.playerIgn]: "NoTitleLink", [F.playerTeamLink]: ["tm2"] }),
-        player("p4", { [F.playerIgn]: "GhostTeam", [F.playerTeamLink]: ["tmX"] }),
+        player("p2", { [F.playerIgn]: "EmptySlug", [F.playerMainTeams]: ["tm1"] }),
+        player("p3", { [F.playerIgn]: "NoTitleLink", [F.playerMainTeams]: ["tm2"] }),
+        player("p4", { [F.playerIgn]: "GhostTeam", [F.playerMainTeams]: ["tmX"] }),
       ]
     );
     expect(out).toEqual({});
@@ -217,7 +311,7 @@ describe("groupPlayers", () => {
       [
         player("p1", {
           [F.playerIgn]: "Solo",
-          [F.playerTeamLink]: ["tm1"],
+          [F.playerMainTeams]: ["tm1"],
           [F.playerRealName]: "",
           [F.playerImage]: [],
         }),

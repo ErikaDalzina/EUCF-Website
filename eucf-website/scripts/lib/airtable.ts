@@ -48,8 +48,8 @@ export const F = {
   // players
   playerIgn: "ign",
   playerRealName: "real name",
-  playerTeamLink: "team", // link → teams
-  playerRoster: "roster", // single-select: main / sub
+  playerMainTeams: "main teams", // link → teams (multiple)
+  playerSubTeams: "sub teams", // link → teams (multiple)
   playerRole: "role",
   playerOrder: "order",
   playerBio: "bio",
