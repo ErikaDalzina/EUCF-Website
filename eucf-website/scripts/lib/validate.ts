@@ -20,11 +20,17 @@ export type GeneratedContent = {
   players: Record<string, Team[]>;
 };
 
+// Sync-time facts the generated shapes can't express on their own.
+export type ValidateContext = {
+  /** Raw player records fetched from Airtable, before grouping. */
+  playersFetched?: number;
+};
+
 // Everything ends up in src/href attributes of the static export; only https
 // URLs and site-relative public/ paths are safe.
 const isSafeUrl = (v: string): boolean => v.startsWith("https://") || v.startsWith("/");
 
-export function validateContent(c: GeneratedContent): string[] {
+export function validateContent(c: GeneratedContent, ctx?: ValidateContext): string[] {
   const errors: string[] = [];
 
   // An empty titles table almost certainly means a broken view/table rename,
@@ -67,6 +73,18 @@ export function validateContent(c: GeneratedContent): string[] {
     if (s.href && !s.href.startsWith("https://")) errors.push(`${at}: href "${s.href}" is not https.`);
   });
 
+  // An empty roster is legitimate — a new title, or the intake window after a
+  // season clear-out — and the title page renders "Roster coming soon" for it.
+  // Fetching players and placing none of them is not: it means the team links
+  // stopped resolving, which would otherwise deploy a set of plausible-looking
+  // empty pages that nobody notices.
+  if (ctx?.playersFetched && Object.keys(c.players).length === 0) {
+    errors.push(
+      `players: ${ctx.playersFetched} records fetched from Airtable but none grouped into a ` +
+        `title — check the "main teams"/"sub teams" links on players and the title link on teams.`
+    );
+  }
+
   for (const [slug, teams] of Object.entries(c.players)) {
     if (!slugs.has(slug)) {
       errors.push(`players["${slug}"]: no matching title slug — check the team→title links.`);
@@ -74,11 +92,24 @@ export function validateContent(c: GeneratedContent): string[] {
     teams.forEach((team, i) => {
       const at = `players["${slug}"][${i}]`;
       if (!team.label) errors.push(`${at}: empty team label.`);
+
+      // Scoped to one team on purpose: the same handle on two different teams
+      // is valid — one player on two rosters, or two different people who
+      // picked similar igns. A repeat on a single team is always a mistake,
+      // usually the intake form submitted twice.
+      const seenIgns = new Set<string>();
+
       [...team.main, ...team.subs].forEach((p, j) => {
         if (!p.ign) errors.push(`${at} player[${j}]: empty ign.`);
         if (!isSafeUrl(p.image)) {
           errors.push(`${at} player[${j}]${p.ign ? ` ("${p.ign}")` : ""}: image "${p.image}" is not https or site-relative.`);
         }
+
+        const key = p.ign.trim().toLowerCase();
+        if (key && seenIgns.has(key)) {
+          errors.push(`${at} ("${team.label}"): duplicate ign "${p.ign}" — remove the extra player record.`);
+        }
+        if (key) seenIgns.add(key);
       });
     });
   }

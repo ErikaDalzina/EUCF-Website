@@ -83,6 +83,53 @@ describe("validateContent", () => {
     expect(validateContent(c)).toEqual([expect.stringContaining('players["no-such-game"]')]);
   });
 
+  it("flags players fetched from Airtable but grouped into no title", () => {
+    const c = valid();
+    c.players = {};
+    expect(validateContent(c, { playersFetched: 121 })).toEqual([
+      expect.stringContaining("none grouped into a title"),
+    ]);
+  });
+
+  it("accepts a legitimately empty roster", () => {
+    const c = valid();
+    c.players = {};
+    // Nothing in Airtable to place — the title page renders "Roster coming
+    // soon". Same when no sync context is supplied at all.
+    expect(validateContent(c, { playersFetched: 0 })).toEqual([]);
+    expect(validateContent(c)).toEqual([]);
+  });
+
+  it("flags a duplicate ign within one team", () => {
+    const c = valid();
+    c.players.valorant[0].main.push({ ign: "Alpha", image: "/knighto.png" });
+    expect(validateContent(c)).toEqual([expect.stringContaining('duplicate ign "Alpha"')]);
+  });
+
+  it("flags a duplicate spanning main and subs", () => {
+    const c = valid();
+    c.players.valorant[0].subs.push({ ign: "Alpha", image: "/knighto.png" });
+    expect(validateContent(c)).toEqual([expect.stringContaining('duplicate ign "Alpha"')]);
+  });
+
+  it("compares igns case-insensitively and trimmed", () => {
+    const c = valid();
+    c.players.valorant[0].subs.push({ ign: "  alpha ", image: "/knighto.png" });
+    expect(validateContent(c)).toEqual([expect.stringContaining("duplicate ign")]);
+  });
+
+  // The same handle on two teams is valid: one player on two rosters, or two
+  // different people who picked similar igns.
+  it("accepts the same ign on two different teams", () => {
+    const c = valid();
+    c.players.valorant.push({
+      label: "VAL B Team",
+      main: [{ ign: "Alpha", image: "/knighto.png" }],
+      subs: [],
+    });
+    expect(validateContent(c)).toEqual([]);
+  });
+
   it("flags empty team labels and empty igns", () => {
     const c = valid();
     c.players.valorant[0].label = "";

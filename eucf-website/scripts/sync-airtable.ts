@@ -101,13 +101,6 @@ async function main(): Promise<void> {
   if (titles.length && titlesOut.every((t) => !t.slug)) {
     console.warn(`[sync-airtable] every title slug is empty — check F.titleSlug ("${F.titleSlug}").`);
   }
-  if (players.length && Object.keys(playersOut).length === 0) {
-    console.warn(
-      `[sync-airtable] ${players.length} players fetched but none grouped into a game — ` +
-        `check F.playerMainTeams ("${F.playerMainTeams}") / F.playerSubTeams ` +
-        `("${F.playerSubTeams}") / F.teamTitleLink ("${F.teamTitleLink}").`
-    );
-  }
   const allPlayers = Object.values(playersOut).flatMap((teamList) =>
     teamList.flatMap((tm) => [...tm.main, ...tm.subs])
   );
@@ -119,13 +112,16 @@ async function main(): Promise<void> {
   // failing the build keeps the last good deploy live, and the reasons show up
   // in the Cloudflare build log. No fallback to committed JSON — the fetch
   // succeeded, the data itself is wrong, and the fix belongs in Airtable.
-  const validationErrors = validateContent({
-    titles: titlesOut,
-    officers: officersOut,
-    sponsors: sponsorsOut,
-    featuredstory: storiesOut,
-    players: playersOut,
-  });
+  const validationErrors = validateContent(
+    {
+      titles: titlesOut,
+      officers: officersOut,
+      sponsors: sponsorsOut,
+      featuredstory: storiesOut,
+      players: playersOut,
+    },
+    { playersFetched: players.length }
+  );
   if (validationErrors.length) {
     for (const err of validationErrors) {
       console.error(`[sync-airtable] content validation failed: ${err}`);
