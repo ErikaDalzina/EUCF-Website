@@ -19,6 +19,7 @@ export const TABLES = {
   officers: process.env.AIRTABLE_TABLE_OFFICERS ?? "officers",
   sponsors: process.env.AIRTABLE_TABLE_SPONSORS ?? "sponsors",
   featuredStory: process.env.AIRTABLE_TABLE_FEATUREDSTORY ?? "featuredstory",
+  about: process.env.AIRTABLE_TABLE_ABOUT ?? "about",
 };
 
 // View names give deterministic ordering (the grid's top-down order) on tables
@@ -32,6 +33,7 @@ export const VIEWS = {
   officers: process.env.AIRTABLE_VIEW_OFFICERS ?? DEFAULT_VIEW,
   sponsors: process.env.AIRTABLE_VIEW_SPONSORS ?? DEFAULT_VIEW,
   featuredStory: process.env.AIRTABLE_VIEW_FEATUREDSTORY ?? DEFAULT_VIEW,
+  about: process.env.AIRTABLE_VIEW_ABOUT ?? DEFAULT_VIEW,
 };
 
 // === Airtable field names — ADJUST THESE TO MATCH THE BASE EXACTLY ===
@@ -76,6 +78,12 @@ export const F = {
   storyImage: "image",
   storyImageUpload: "image upload",
   storyImageAlt: "image alt",
+  // about
+  aboutTitle: "title",
+  aboutDescription: "description",
+  aboutImage: "image",
+  aboutImageUpload: "image upload",
+  aboutImageAlt: "image alt",
 };
 
 export type AirtableRecord = { id: string; fields: Record<string, unknown> };

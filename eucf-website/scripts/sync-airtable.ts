@@ -35,13 +35,14 @@ if (!hasAirtableCreds()) {
 }
 
 async function main(): Promise<void> {
-  const [titles, teams, players, officers, sponsors, stories] = await Promise.all([
+  const [titles, teams, players, officers, sponsors, stories, about] = await Promise.all([
     fetchAll(TABLES.titles, VIEWS.titles),
     fetchAll(TABLES.teams, VIEWS.teams),
     fetchAll(TABLES.players),
     fetchAll(TABLES.officers, VIEWS.officers),
     fetchAll(TABLES.sponsors, VIEWS.sponsors),
     fetchAll(TABLES.featuredStory, VIEWS.featuredStory),
+    fetchAll(TABLES.about, VIEWS.about),
   ]);
 
   // Optimize new attachments into R2 and write the URLs back — both to
@@ -49,7 +50,7 @@ async function main(): Promise<void> {
   // The build must never fail on images; records keep their old URL field
   // value (or the placeholder) and the next build retries.
   try {
-    await syncImages(buildImageJobs({ titles, players, officers, sponsors, stories }));
+    await syncImages(buildImageJobs({ titles, players, officers, sponsors, stories, about }));
   } catch (e) {
     console.warn("[sync-images] image pipeline failed — continuing with existing URLs:", e);
   }
@@ -83,6 +84,13 @@ async function main(): Promise<void> {
     imageAlt: str(s.fields[F.storyImageAlt]),
   }));
 
+  const aboutOut = about.map((a) => ({
+    title: str(a.fields[F.aboutTitle]),
+    description: str(a.fields[F.aboutDescription]),
+    image: imageUrl(a.fields[F.aboutImage], "about image"),
+    imageAlt: str(a.fields[F.aboutImageAlt]),
+  }));
+
   // Sanity warnings — surface a mistyped F field name or table name immediately
   // (the script still completes; placeholders remain the fallback).
   const tableCounts: Record<string, number> = {
@@ -92,6 +100,7 @@ async function main(): Promise<void> {
     officers: officers.length,
     sponsors: sponsors.length,
     featuredstory: stories.length,
+    about: about.length,
   };
   for (const [name, n] of Object.entries(tableCounts)) {
     if (n === 0) {
@@ -118,6 +127,7 @@ async function main(): Promise<void> {
       officers: officersOut,
       sponsors: sponsorsOut,
       featuredstory: storiesOut,
+      about: aboutOut,
       players: playersOut,
     },
     { playersFetched: players.length }
@@ -137,11 +147,13 @@ async function main(): Promise<void> {
   write("officers.json", officersOut);
   write("sponsors.json", sponsorsOut);
   write("featuredstory.json", storiesOut);
+  write("about.json", aboutOut);
 
   console.log(
     `[sync-airtable] wrote generated JSON — ${titlesOut.length} titles, ` +
       `${players.length} players across ${Object.keys(playersOut).length} games, ` +
-      `${officersOut.length} officers, ${sponsorsOut.length} sponsors, ${storiesOut.length} stories.`
+      `${officersOut.length} officers, ${sponsorsOut.length} sponsors, ` +
+      `${storiesOut.length} stories, ${aboutOut.length} about sections.`
   );
 }
 
@@ -149,7 +161,7 @@ main().catch((e) => {
   console.error("[sync-airtable] sync failed:", e);
   // Fall back to the committed generated JSON if it's all present, so a
   // transient Airtable/network failure doesn't break the build.
-  const names = ["players", "titles", "officers", "sponsors", "featuredstory"];
+  const names = ["players", "titles", "officers", "sponsors", "featuredstory", "about"];
   if (names.every((n) => existsSync(resolve(OUT_DIR, `${n}.json`)))) {
     console.warn("[sync-airtable] using existing committed generated JSON.");
     process.exit(0);

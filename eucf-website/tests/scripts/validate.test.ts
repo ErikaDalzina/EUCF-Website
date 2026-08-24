@@ -4,6 +4,7 @@ import committedTitles from "../../src/data/generated/titles.json";
 import committedOfficers from "../../src/data/generated/officers.json";
 import committedSponsors from "../../src/data/generated/sponsors.json";
 import committedStories from "../../src/data/generated/featuredstory.json";
+import committedAbout from "../../src/data/generated/about.json";
 import committedPlayers from "../../src/data/generated/players.json";
 
 const valid = (): GeneratedContent => ({
@@ -14,6 +15,9 @@ const valid = (): GeneratedContent => ({
   sponsors: [{ name: "Acme", logo: "/acme.png", website: "https://acme.example" }],
   featuredstory: [
     { title: "Big win", body: "We won", href: "https://news.example/win", imageSrc: "/win.png", imageAlt: "Trophy" },
+  ],
+  about: [
+    { title: "Overview", description: "We game", image: "/knighto.png", imageAlt: "The Knighto mascot" },
   ],
   players: {
     valorant: [
@@ -38,6 +42,20 @@ describe("validateContent", () => {
     expect(validateContent(c)).toEqual([expect.stringContaining("titles: no records")]);
   });
 
+  // The About page is nothing but these sections, so an empty table is a
+  // renamed table/view — not intentionally blank content.
+  it("flags an empty about table", () => {
+    const c = valid();
+    c.about = [];
+    expect(validateContent(c)).toEqual([expect.stringContaining("about: no records")]);
+  });
+
+  it("flags an about section with no title", () => {
+    const c = valid();
+    c.about[0].title = "";
+    expect(validateContent(c)).toEqual([expect.stringContaining("about[0]: empty title")]);
+  });
+
   it("flags titles with missing name or slug", () => {
     const c = valid();
     c.titles[0].name = "";
@@ -60,13 +78,15 @@ describe("validateContent", () => {
     c.officers[0].image = "javascript:alert(1)";
     c.sponsors[0].website = "http://insecure.example";
     c.featuredstory[0].href = "ftp://old.example";
+    c.about[0].image = "http://insecure.example/dungeon.png";
     c.players.valorant[0].main[0].image = "data:image/png;base64,xxx";
     const errors = validateContent(c);
-    expect(errors).toHaveLength(5);
+    expect(errors).toHaveLength(6);
     expect(errors).toContainEqual(expect.stringContaining("icon"));
     expect(errors).toContainEqual(expect.stringContaining("officers[0]"));
     expect(errors).toContainEqual(expect.stringContaining("website"));
     expect(errors).toContainEqual(expect.stringContaining("href"));
+    expect(errors).toContainEqual(expect.stringContaining('about[0] ("Overview")'));
     expect(errors).toContainEqual(expect.stringContaining('("Alpha")'));
   });
 
@@ -148,6 +168,7 @@ describe("validateContent", () => {
         officers: committedOfficers,
         sponsors: committedSponsors,
         featuredstory: committedStories,
+        about: committedAbout,
         players: committedPlayers as GeneratedContent["players"],
       })
     ).toEqual([]);

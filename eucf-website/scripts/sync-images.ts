@@ -328,6 +328,7 @@ export function buildImageJobs(t: {
   officers: AirtableRecord[];
   sponsors: AirtableRecord[];
   stories: AirtableRecord[];
+  about: AirtableRecord[];
 }): ImageJob[] {
   return [
     { table: TABLES.titles, records: t.titles, attachmentField: F.titleImageUpload, urlField: F.titleImage, profile: "logo", label: "titles" },
@@ -335,6 +336,7 @@ export function buildImageJobs(t: {
     { table: TABLES.officers, records: t.officers, attachmentField: F.officerImageUpload, urlField: F.officerImage, profile: "photo", label: "officers" },
     { table: TABLES.sponsors, records: t.sponsors, attachmentField: F.sponsorImageUpload, urlField: F.sponsorImage, profile: "logo", label: "sponsors" },
     { table: TABLES.featuredStory, records: t.stories, attachmentField: F.storyImageUpload, urlField: F.storyImage, profile: "hero", label: "featuredstory" },
+    { table: TABLES.about, records: t.about, attachmentField: F.aboutImageUpload, urlField: F.aboutImage, profile: "hero", label: "about" },
   ];
 }
 
@@ -346,14 +348,15 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     process.exit(0);
   }
   (async () => {
-    const [titles, players, officers, sponsors, stories] = await Promise.all([
+    const [titles, players, officers, sponsors, stories, about] = await Promise.all([
       fetchAll(TABLES.titles, VIEWS.titles),
       fetchAll(TABLES.players),
       fetchAll(TABLES.officers, VIEWS.officers),
       fetchAll(TABLES.sponsors, VIEWS.sponsors),
       fetchAll(TABLES.featuredStory, VIEWS.featuredStory),
+      fetchAll(TABLES.about, VIEWS.about),
     ]);
-    await syncImages(buildImageJobs({ titles, players, officers, sponsors, stories }));
+    await syncImages(buildImageJobs({ titles, players, officers, sponsors, stories, about }));
   })().catch((e) => {
     console.error("[sync-images] failed:", e);
     process.exit(1);

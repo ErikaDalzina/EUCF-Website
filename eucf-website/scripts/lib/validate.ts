@@ -11,12 +11,14 @@ type TitleOut = { name: string; slug: string; icon: string; description: string 
 type OfficerOut = { name: string; position: string; image: string };
 type SponsorOut = { name: string; logo: string; website: string };
 type StoryOut = { title: string; body: string; href: string; imageSrc: string; imageAlt: string };
+type AboutOut = { title: string; description: string; image: string; imageAlt: string };
 
 export type GeneratedContent = {
   titles: TitleOut[];
   officers: OfficerOut[];
   sponsors: SponsorOut[];
   featuredstory: StoryOut[];
+  about: AboutOut[];
   players: Record<string, Team[]>;
 };
 
@@ -71,6 +73,18 @@ export function validateContent(c: GeneratedContent, ctx?: ValidateContext): str
       errors.push(`${at}: imageSrc "${s.imageSrc}" is not https or site-relative.`);
     }
     if (s.href && !s.href.startsWith("https://")) errors.push(`${at}: href "${s.href}" is not https.`);
+  });
+
+  // The About page is nothing but these sections — an empty table means a
+  // renamed table/view, not intentionally blank content.
+  if (c.about.length === 0) {
+    errors.push(`about: no records — check the Airtable table/view before deploying.`);
+  }
+
+  c.about.forEach((a, i) => {
+    const at = `about[${i}]${a.title ? ` ("${a.title}")` : ""}`;
+    if (!a.title) errors.push(`${at}: empty title.`);
+    if (!isSafeUrl(a.image)) errors.push(`${at}: image "${a.image}" is not https or site-relative.`);
   });
 
   // An empty roster is legitimate — a new title, or the intake window after a
