@@ -18,7 +18,7 @@ export default function About() {
               <h2 className="font-heading text-3xl md:text-4xl font-semibold text-heading mb-4 text-center">
                 {section.title}
               </h2>
-              <p className="text-lg text-zinc-900">{section.description}</p>
+              <p className="text-lg text-zinc-900 whitespace-pre-line">{section.description}</p>
             </div>
 
             <div className="relative w-full aspect-4/3">
