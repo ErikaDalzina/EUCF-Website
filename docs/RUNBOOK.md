@@ -66,13 +66,19 @@ How main vs sub is decided: **purely by which field the link is in.** There is n
 separate "main or sub" column. A player appears on every team listed across both
 fields, and can be a main on one team and a sub on another.
 
-### `officers`, `sponsors`, `featuredstory`
+### `officers`, `sponsors`, `featuredstory`, `about`
 
 | Table | Fields |
 | --- | --- |
 | `officers` | `name`, `position`, `image`, `image upload` |
 | `sponsors` | `name`, `website` (https only), `logo`, `logo upload` |
 | `featuredstory` | `title`, `body`, `href` (https only), `image`, `image upload`, `image alt` |
+| `about` | `title`, `description`, `image`, `image upload`, `image alt` |
+
+`about` drives the whole `/about` page — one row per section, top to bottom, each
+rendered as a heading, its `description`, and its image. Add a row to add a
+section; delete one to remove it. `image alt` describes the image for screen
+readers and can be left empty when the image is purely decorative.
 
 ### Views
 
@@ -92,6 +98,7 @@ true, the build stops:
 - A title has no `name` or no `slug`
 - Two titles share the same `slug`
 - The `titles` table is empty
+- The `about` table is empty, or a section in it has no `title`
 - A team has no `team name`
 - A player has no `ign`
 - **Two players with the same `ign` on the same team**

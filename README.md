@@ -91,7 +91,7 @@ on upload attachments and never touches path values in the image columns.
 4. In Airtable, add an **attachment**-type field next to each image column:
    `titles` → `icon upload`, `players` → `image upload`, `officers` →
    `image upload`, `sponsors` → `logo upload`, `featuredstory` →
-   `image upload` (names must match `F` in
+   `image upload`, `about` → `image upload` (names must match `F` in
    `eucf-website/scripts/lib/airtable.ts` exactly). The existing image columns
    stay as they are, any text-ish type (long text, single line, URL) works.
 
