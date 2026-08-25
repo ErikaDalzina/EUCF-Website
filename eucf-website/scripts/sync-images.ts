@@ -65,6 +65,12 @@ type R2Env = {
   publicBaseUrl: string;
 };
 
+// A copied-but-unfilled .env.local keeps .env.local.example's `xxxx` values.
+// They're non-empty, so a plain presence check accepts them and the S3 client
+// ends up aimed at an account that doesn't exist — failing once per image
+// instead of skipping the step the way an unset variable would.
+const isPlaceholder = (v: string): boolean => /^x+$/i.test(v);
+
 export function r2Env(): R2Env | null {
   const names = [
     "R2_ACCOUNT_ID",
@@ -73,7 +79,10 @@ export function r2Env(): R2Env | null {
     "R2_BUCKET",
     "R2_PUBLIC_BASE_URL",
   ] as const;
-  const missing = names.filter((n) => !process.env[n]);
+  const missing = names.filter((n) => {
+    const v = process.env[n];
+    return !v || isPlaceholder(v);
+  });
   if (missing.length) {
     console.warn(
       `[sync-images] ${missing.join(", ")} not set — skipping image sync; ` +

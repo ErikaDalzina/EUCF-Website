@@ -151,4 +151,13 @@ describe("r2Env", () => {
     expect(r2Env()).toBeNull();
     expect(warn).toHaveBeenCalledWith(expect.stringContaining("R2_BUCKET"));
   });
+
+  // .env.local.example's placeholders are non-empty, so they'd otherwise be
+  // taken for real credentials and fail per-image instead of skipping.
+  it("treats the example file's xxxx placeholders as unset", () => {
+    for (const [k, v] of Object.entries(ALL)) vi.stubEnv(k, v);
+    vi.stubEnv("R2_ACCOUNT_ID", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+    expect(r2Env()).toBeNull();
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining("R2_ACCOUNT_ID"));
+  });
 });
