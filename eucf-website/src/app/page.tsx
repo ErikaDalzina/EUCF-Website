@@ -52,8 +52,7 @@ export default function Home() {
           Esports at UCF
         </h1>
         <p className="mt-6 max-w-2xl text-base md:text-lg text-black/80">
-          Competitive gaming at the University of Central Florida — placeholder
-          tagline you can edit later.
+          Competitive gaming at the University of Central Florida.
         </p>
       </div>
     </section>
