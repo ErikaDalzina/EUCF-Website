@@ -8,10 +8,11 @@ interface PlayerCardProps {
   player: Player;
   onClick: () => void;
   gameName?: string;
-  priority?: boolean;
+  loading?: "eager" | "lazy";
+  fetchPriority?: "high" | "auto";
 }
 
-export default function PlayerCard({ player, onClick, gameName, priority }: PlayerCardProps) {
+export default function PlayerCard({ player, onClick, gameName, loading, fetchPriority }: PlayerCardProps) {
   const [loaded, setLoaded] = useState(false);
 
   return (
@@ -30,7 +31,8 @@ export default function PlayerCard({ player, onClick, gameName, priority }: Play
           src={player.image}
           alt={`${player.ign}, EUCF${gameName ? ` ${gameName}` : ""} player`}
           fill
-          priority={priority}
+          loading={loading}
+          fetchPriority={fetchPriority}
           onLoad={() => setLoaded(true)}
           className={`object-cover transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0"}`}
           sizes="(min-width: 768px) 30vw, (min-width: 640px) 45vw, 90vw"

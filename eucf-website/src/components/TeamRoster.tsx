@@ -31,7 +31,8 @@ export default function TeamRoster({ team, gameName, priorityMainRow }: TeamRost
             player={player}
             gameName={gameName}
             onClick={() => setSelected(player)}
-            priority={priorityMainRow && i < 3}
+            loading={priorityMainRow && i < 3 ? "eager" : "lazy"}
+            fetchPriority={priorityMainRow && i === 0 ? "high" : undefined}
           />
         ))}
       </div>
