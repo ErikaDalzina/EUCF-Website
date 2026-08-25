@@ -10,10 +10,11 @@ export interface Officer {
   isActive?: boolean;
   onTap?: () => void;
   hidden?: boolean;
-  priority?: boolean;
+  loading?: "eager" | "lazy";
+  fetchPriority?: "high" | "auto";
 }
 
-export default function OfficerCard({ name, position, image, isActive, onTap, hidden, priority }: Officer) {
+export default function OfficerCard({ name, position, image, isActive, onTap, hidden, loading, fetchPriority }: Officer) {
   const [loaded, setLoaded] = useState(false);
 
   return (
@@ -31,7 +32,8 @@ export default function OfficerCard({ name, position, image, isActive, onTap, hi
         src={image}
         alt={`${name}, ${position} of EUCF`}
         fill
-        priority={priority}
+        loading={loading}
+        fetchPriority={fetchPriority}
         onLoad={() => setLoaded(true)}
         className={`object-cover transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0"}`}
       />

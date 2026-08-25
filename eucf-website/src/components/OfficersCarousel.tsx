@@ -6,6 +6,8 @@ import type { Officer } from "./OfficerCard";
 
 const LOOP_SECONDS = 90;
 const IDLE_MS = 600;
+// Cards visible above the fold at md (w-100 + gap-10); the rest lazy-load.
+const EAGER_COUNT = 3;
 
 export default function OfficersCarousel({ officers }: { officers: Officer[] }) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
@@ -114,16 +116,21 @@ export default function OfficersCarousel({ officers }: { officers: Officer[] }) 
         className="overflow-x-auto overflow-y-hidden scrollbar-hide"
       >
         <div className="flex w-max gap-8 sm:gap-10 py-6 pr-8 sm:pr-10">
-          {[...officers, ...officers].map((officer, i) => (
-            <OfficerCard
-              key={i}
-              {...officer}
-              isActive={activeIndex === i}
-              onTap={() => handleTap(i)}
-              hidden={i >= officers.length}
-              priority={i < officers.length}
-            />
-          ))}
+          {[...officers, ...officers].map((officer, i) => {
+            // Clones share a src with their original, so they mirror its loading value.
+            const realIndex = i % officers.length;
+            return (
+              <OfficerCard
+                key={i}
+                {...officer}
+                isActive={activeIndex === i}
+                onTap={() => handleTap(i)}
+                hidden={i >= officers.length}
+                loading={realIndex < EAGER_COUNT ? "eager" : "lazy"}
+                fetchPriority={realIndex === 0 ? "high" : undefined}
+              />
+            );
+          })}
         </div>
       </div>
 
