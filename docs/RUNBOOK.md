@@ -268,3 +268,19 @@ no rebuild runs, and nothing in Airtable or the repo changes.
 
 You don't need to roll back a **failed** build. A build that fails never
 replaces the live site, so there's nothing to undo.
+
+## Image hosting (for developers)
+
+Photos and logos are served from `assets.esportsatucf.com`, backed by the
+Cloudflare R2 bucket `eucf-images`. The bucket is **world-readable** — anything
+put in it is public. Never use it for backups, exports, or member data.
+
+The R2 API token has no expiry, so image uploads can't silently break
+mid-semester. **Rotate it at officer turnover:** R2 → API Tokens → create a
+replacement (scoped to `eucf-images`, Object Read & Write) → update the
+`R2_ACCESS_KEY_ID` and `R2_SECRET_ACCESS_KEY` variables on the Cloudflare Pages
+project → revoke the old token.
+
+If images stop updating, the token is the first thing to check: a bad token
+fails the image step only — the build still succeeds and the site still
+publishes, just without the new photos.
