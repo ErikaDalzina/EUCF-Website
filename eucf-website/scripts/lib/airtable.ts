@@ -80,6 +80,7 @@ export const F = {
   storyImageAlt: "image alt",
   // about
   aboutTitle: "title",
+  aboutEyebrow: "eyebrow",
   aboutDescription: "description",
   aboutImage: "image",
   aboutImageUpload: "image upload",

@@ -86,6 +86,10 @@ async function main(): Promise<void> {
 
   const aboutOut = about.map((a) => ({
     title: str(a.fields[F.aboutTitle]),
+    // Optional by design: str() yields "" for a blank or absent column, and the
+    // About page just renders no kicker for that pillar. A newly added pillar is
+    // expected to sit eyebrow-less until someone writes one.
+    eyebrow: str(a.fields[F.aboutEyebrow]),
     description: str(a.fields[F.aboutDescription]),
     image: imageUrl(a.fields[F.aboutImage], "about image"),
     imageAlt: str(a.fields[F.aboutImageAlt]),

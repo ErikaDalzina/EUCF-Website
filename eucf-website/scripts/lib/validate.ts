@@ -11,7 +11,13 @@ type TitleOut = { name: string; slug: string; icon: string; description: string 
 type OfficerOut = { name: string; position: string; image: string };
 type SponsorOut = { name: string; logo: string; website: string };
 type StoryOut = { title: string; body: string; href: string; imageSrc: string; imageAlt: string };
-type AboutOut = { title: string; description: string; image: string; imageAlt: string };
+type AboutOut = {
+  title: string;
+  eyebrow: string;
+  description: string;
+  image: string;
+  imageAlt: string;
+};
 
 export type GeneratedContent = {
   titles: TitleOut[];

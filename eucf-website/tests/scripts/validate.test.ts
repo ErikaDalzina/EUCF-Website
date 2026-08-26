@@ -17,7 +17,13 @@ const valid = (): GeneratedContent => ({
     { title: "Big win", body: "We won", href: "https://news.example/win", imageSrc: "/win.png", imageAlt: "Trophy" },
   ],
   about: [
-    { title: "Overview", description: "We game", image: "/knighto.png", imageAlt: "The Knighto mascot" },
+    {
+      title: "Overview",
+      eyebrow: "Who we are",
+      description: "We game",
+      image: "/knighto.png",
+      imageAlt: "The Knighto mascot",
+    },
   ],
   players: {
     valorant: [
