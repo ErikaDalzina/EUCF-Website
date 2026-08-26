@@ -1,4 +1,5 @@
 import Image from "next/image";
+import TitleHeader from "@/components/TitleHeader";
 
 // Email defaults to the address already used in the site footer.
 const SOCIALS = [
@@ -18,13 +19,10 @@ const SOCIALS = [
 export default function Connect() {
   return (
     <div>
-      <h1 className="font-heading text-5xl md:text-6xl font-semibold text-heading text-center">
-        Contact Us
-      </h1>
-      <p className="text-xl text-zinc-900 text-center px-8 py-6 m-1 mx-auto">
-        Have a question, want to get involved, or just want to say hi? Reach out to
-        Esports at UCF through any of the channels below, we&apos;d love to hear from you.
-      </p>
+      <TitleHeader
+        title="Contact Us"
+        description="Have a question, want to get involved, or just want to say hi? Reach out to Esports at UCF through any of the channels below, we’d love to hear from you."
+      />
 
       <div className="mx-auto max-w-6xl px-6 md:px-16 pt-10 pb-20">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
