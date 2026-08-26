@@ -3,7 +3,7 @@ import BackToTopButton from "./BackToTopButton";
 
 export default function Footer() {
   return (
-    <footer className="relative mt-2 bg-zinc-900 text-white font-heading">
+    <footer className="relative bg-zinc-900 text-white font-heading">
       <div className="max-w-7xl mx-auto px-6 md:px-8 py-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-16">
           <div className="flex flex-col justify-between space-y-4">
