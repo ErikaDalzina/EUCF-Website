@@ -7,12 +7,14 @@ const officers: Officer[] = officersData as Officer[];
 
 export default function Officers() {
   return (
-    <div className="pb-20">
+    <div>
       <TitleHeader
         title="Officers"
         description="Meet the leaders behind EUCF. Our officers dedicate their time to growing UCF’s Esports scene through competition, collaboration, and community on and off campus, creating opportunities for students to connect and level up together."
       />
-      <OfficersCarousel officers={officers} />
+      <div className="mt-11">
+        <OfficersCarousel officers={officers} />
+      </div>
     </div>
   );
 }
