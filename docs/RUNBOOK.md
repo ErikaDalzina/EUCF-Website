@@ -73,12 +73,26 @@ fields, and can be a main on one team and a sub on another.
 | `officers` | `name`, `position`, `image`, `image upload` |
 | `sponsors` | `name`, `website` (https only), `logo`, `logo upload` |
 | `featuredstory` | `title`, `body`, `href` (https only), `image`, `image upload`, `image alt` |
-| `about` | `title`, `description`, `image`, `image upload`, `image alt` |
+| `about` | `title`, `eyebrow`, `description`, `image`, `image upload`, `image alt` |
 
-`about` drives the whole `/about` page — one row per section, top to bottom, each
-rendered as a heading, its `description`, and its image. Add a row to add a
-section; delete one to remove it. `image alt` describes the image for screen
-readers and can be left empty when the image is purely decorative.
+`about` drives the whole `/about` page — one row per pillar, rendered as a row of
+tabs with one pillar shown at a time. Top-to-bottom order in the grid becomes
+left-to-right tab order. Add a row to add a tab; delete one to remove it.
+`image alt` describes the image for screen readers and can be left empty when the
+image is purely decorative.
+
+Two things worth knowing before you edit `about`:
+
+- **`title` is also the tab label**, so keep it to one or two words. Long titles
+  wrap onto two lines and squeeze the other tabs.
+- **`eyebrow` is the small gold kicker above each heading** ("Who we are", "On
+  the stage", …). Keep it to two or three words. Leaving it blank is fine — the
+  pillar just renders without a kicker, and nothing fails.
+
+One thing on the About page is *not* editable here: the small pill tags under
+the Compete description. They're a fixed list in
+[`src/data/about.ts`](../eucf-website/src/data/about.ts) and need a developer to
+change.
 
 ### Views
 
