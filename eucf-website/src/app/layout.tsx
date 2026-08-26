@@ -49,7 +49,10 @@ export default function RootLayout({
           Skip to main content
         </a>
         <Header />
-        <main id="main-content" tabIndex={-1} className="flex-1 pt-6">
+        {/* min-h-dvh keeps the content area at least a full viewport tall so the
+            tall footer can never start above the fold on short pages. It's a
+            floor: anything already taller is unaffected. */}
+        <main id="main-content" tabIndex={-1} className="flex-1 pt-6 min-h-dvh">
           {children}
         </main>
         <Footer />

@@ -10,7 +10,7 @@ export default function BackToTopButton() {
     <button
       type="button"
       onClick={handleBackToTop}
-      className="mt-auto pt-8 text-xl leading-snug font-normal underline hover:opacity-60 transition self-start text-left bg-transparent border-0 p-0 cursor-pointer"
+      className="mt-auto pt-8 text-base md:text-xl leading-snug font-normal underline hover:opacity-60 transition self-start text-left bg-transparent border-0 p-0 cursor-pointer"
     >
       Back to top
     </button>
