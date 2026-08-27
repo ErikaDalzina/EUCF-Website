@@ -1,9 +1,16 @@
 [
   {
-    "title": "Placeholder headline goes here",
-    "body": "Short paragraph describing the event, news item, or update. This text will be swapped per post but the layout and styling stay the same.",
-    "href": "https://example.com",
-    "imageSrc": "/knighto.png",
-    "imageAlt": "UCF Knighto mascot"
+    "title": "UCF x UF Showmatch",
+    "body": "Tune in and watch Esports at UCF and UF Esports go head to head to figure out who is best! 5 different titles, only 1 champion. Who will come out on top?",
+    "href": "https://www.instagram.com/esportsatucf/p/DcMNV80IDvC/?hl=en",
+    "imageSrc": "https://assets.esportsatucf.com/images/907c20cec6aca837d57d3df4476912a78f3f9aa443cb1e3602c5261a8759201a.webp",
+    "imageAlt": "UCF Knight and UF gator going head to head. August 29th 2:00pm EST. 5 games: Valorant, Rocket league, Overwatch, Rainbow six, and Marvel Rivals. Live on twitch.tv/esportsatucf and twitch.tv/gator_esports. "
+  },
+  {
+    "title": "UCF Team Tryouts",
+    "body": "UCF yearly tryouts are happening now! Come show off what you are made of!",
+    "href": "https://www.instagram.com/esportsatucf/p/Dcbg0Puxf7u/?hl=en",
+    "imageSrc": "https://assets.esportsatucf.com/images/8951e8b9d72e942970866d0bc5360eb33f84967e57f7e98ae96d3d61d8f6ff52.webp",
+    "imageAlt": ""
   }
 ]

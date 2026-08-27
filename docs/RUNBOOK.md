@@ -138,7 +138,7 @@ missing their `title` link. Check `main teams` / `sub teams` on `players`, and
 `title` on `teams`.
 
 **An empty roster is not an error.** A title with no players publishes normally
-and shows "Roster coming soon — check back later!" on its page. That's expected
+and shows "Roster coming soon; check back later!" on its page. That's expected
 for a new game, or during intake after a season changeover.
 
 ## Editing content

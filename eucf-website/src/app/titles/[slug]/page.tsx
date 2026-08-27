@@ -34,7 +34,7 @@ export default async function TitlePage({ params }: TitlePageProps) {
       <div className="max-w-6xl mx-auto px-6 md:px-16 py-12 space-y-16">
         {roster.length === 0 && (
           <p className="text-center text-lg text-zinc-600">
-            Roster coming soon — check back later!
+            Roster coming soon; check back later!
           </p>
         )}
         {roster.map((team, i) => (
