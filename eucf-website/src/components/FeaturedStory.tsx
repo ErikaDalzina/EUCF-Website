@@ -12,7 +12,7 @@ export default async function FeaturedStory() {
     >
       <div className="max-w-7xl mx-auto px-6 md:px-16 space-y-20 md:space-y-32">
         {stories.map((story, index) => {
-          const linkLabel = story.linkLabel ?? "Read the full story!";
+          const linkLabel = story.linkLabel ?? "Learn more!";
           const headingId = `featured-story-heading-${index}`;
           return (
             <div
@@ -26,7 +26,7 @@ export default async function FeaturedStory() {
                 >
                   {story.title}
                 </h2>
-                <p className="mt-8 md:mt-10 text-lg sm:text-xl md:text-xl text-zinc-800 leading-relaxed">
+                <p className="mt-8 md:mt-10 text-lg sm:text-xl md:text-xl text-zinc-800 leading-relaxed whitespace-pre-line">
                   {story.body}
                 </p>
                 <a
