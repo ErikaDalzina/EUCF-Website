@@ -26,6 +26,17 @@ export function mockMatchMedia(matches: boolean): void {
 }
 mockMatchMedia(false);
 
+// jsdom has no ResizeObserver; OfficersCarousel uses one to cache its scroll
+// width. Layout is always 0 in jsdom, so a no-op stub is enough.
+vi.stubGlobal(
+  "ResizeObserver",
+  class {
+    observe(): void {}
+    unobserve(): void {}
+    disconnect(): void {}
+  }
+);
+
 // next/image needs the Next runtime; a plain <img> keeps alt-text queries
 // working. Next-only props are stripped so React doesn't warn about them.
 const NEXT_ONLY_PROPS = [
