@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import OfficerCard from "./OfficerCard";
 import type { Officer } from "./OfficerCard";
 
@@ -14,33 +14,50 @@ export default function OfficersCarousel({ officers }: { officers: Officer[] }) 
 
   const isHoveredRef = useRef(false);
   const isFocusedRef = useRef(false);
-  const isUserScrollingRef = useRef(false);
-  const idleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const userScrollingUntilRef = useRef(0);
   const rafIdRef = useRef<number | null>(null);
   const accumulatedScrollRef = useRef(0);
+  const halfWidthRef = useRef(0);
   const containerNodeRef = useRef<HTMLDivElement | null>(null);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+
+  const hasActiveCard = activeIndex !== null;
 
   const handleTap = (index: number) => {
     setActiveIndex((prev) => (prev === index ? null : index));
   };
 
-  const containerRefCallback = (node: HTMLDivElement | null) => {
-    containerNodeRef.current = node;
+  useEffect(() => {
+    const node = containerNodeRef.current;
     if (!node)
     {
       return;
     }
 
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const measure = () => { halfWidthRef.current = node.scrollWidth / 2; };
+    measure();
+
+    const resizeObserver = new ResizeObserver(measure);
+    resizeObserver.observe(node);
+    if (node.firstElementChild)
+    {
+      resizeObserver.observe(node.firstElementChild);
+    }
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+    {
+      return () => resizeObserver.disconnect();
+    }
 
     const step = () => {
-      if (!isHoveredRef.current && !isFocusedRef.current && !isUserScrollingRef.current && !reducedMotion) {
-        const halfWidth = node.scrollWidth / 2;
-        if (halfWidth > 0) 
+      const isUserScrolling = Date.now() < userScrollingUntilRef.current;
+      if (!isHoveredRef.current && !isFocusedRef.current && !isUserScrolling) {
+        const halfWidth = halfWidthRef.current;
+        if (halfWidth > 0)
         {
           accumulatedScrollRef.current += halfWidth / (LOOP_SECONDS * 60);
           const whole = Math.floor(accumulatedScrollRef.current);
-          if (whole > 0) 
+          if (whole > 0)
           {
             node.scrollLeft += whole;
             accumulatedScrollRef.current -= whole;
@@ -53,16 +70,28 @@ export default function OfficersCarousel({ officers }: { officers: Officer[] }) 
     rafIdRef.current = requestAnimationFrame(step);
 
     return () => {
-      if (rafIdRef.current) 
+      resizeObserver.disconnect();
+      if (rafIdRef.current)
       {
         cancelAnimationFrame(rafIdRef.current);
       }
-      if (idleTimeoutRef.current)
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!hasActiveCard)
+    {
+      return;
+    }
+    const dismissOutside = (e: PointerEvent) => {
+      if (!wrapperRef.current?.contains(e.target as Node))
       {
-        clearTimeout(idleTimeoutRef.current);
+        setActiveIndex(null);
       }
     };
-  };
+    document.addEventListener("pointerdown", dismissOutside);
+    return () => document.removeEventListener("pointerdown", dismissOutside);
+  }, [hasActiveCard]);
 
   const scrollByTwo = (direction: 2 | -2) => {
     const node = containerNodeRef.current;
@@ -70,7 +99,7 @@ export default function OfficersCarousel({ officers }: { officers: Officer[] }) 
     {
       return;
     } 
-    const halfWidth = node.scrollWidth / 2;
+    const halfWidth = halfWidthRef.current;
     if (halfWidth > 0 && node.scrollLeft >= halfWidth)
     {
       node.scrollLeft -= halfWidth;
@@ -82,32 +111,34 @@ export default function OfficersCarousel({ officers }: { officers: Officer[] }) 
   };
 
   const markUserScrolling = () => {
-    isUserScrollingRef.current = true;
-    if (idleTimeoutRef.current)
-    {
-      clearTimeout(idleTimeoutRef.current);
-    }
-    idleTimeoutRef.current = setTimeout(() => {
-      isUserScrollingRef.current = false;
-    }, IDLE_MS);
+    userScrollingUntilRef.current = Date.now() + IDLE_MS;
   };
 
   return (
     <div
+      ref={wrapperRef}
       className="relative group"
       aria-roledescription="carousel"
       aria-label="Officers"
       onMouseEnter={() => { isHoveredRef.current = true; }}
-      onMouseLeave={() => { isHoveredRef.current = false; }}
-      onFocus={() => { isFocusedRef.current = true; }}
+      onMouseLeave={() => {
+        isHoveredRef.current = false;
+        setActiveIndex(null);
+      }}
+      onFocus={(e) => {
+        if ((e.target as HTMLElement).matches(":focus-visible")) {
+          isFocusedRef.current = true;
+        }
+      }}
       onBlur={(e) => {
         if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
           isFocusedRef.current = false;
+          setActiveIndex(null);
         }
       }}
     >
       <div
-        ref={containerRefCallback}
+        ref={containerNodeRef}
         role="region"
         aria-label="Officers list"
         tabIndex={0}
