@@ -3,60 +3,60 @@
     "name": "Valorant",
     "slug": "valorant",
     "icon": "/VALlogo.png",
-    "description": "EUCF's Valorant teams compete in collegiate leagues across North America, sharpening tactical play and pushing for bracket placements every season."
+    "description": "Made up of some of the university’s sharpest FPS players, UCF’s Valorant team steps up to the challenge every week."
   },
   {
     "name": "Overwatch",
     "slug": "overwatch",
     "icon": "/OWlogo.png",
-    "description": "Our Overwatch roster scrims and competes in collegiate Overwatch circuits, focusing on coordinated team comps and high-tempo play."
+    "description": "Whether it’s securing the point or pushing the payload, UCF’s Overwatch team knows that when it’s time to save the world, it’s game on!"
   },
   {
     "name": "Marvel Rivals",
     "slug": "marvel-rivals",
     "icon": "/MRlogo.png",
-    "description": "EUCF's Marvel Rivals squad represents UCF in the newest hero shooter on the block, learning the meta and competing in early collegiate events."
+    "description": "When it comes to locking down objectives, UCF’s Marvel Rivals team is always ready to put on a show!"
   },
   {
     "name": "Rocket League",
     "slug": "rocket-league",
     "icon": "/RLlogo.png",
-    "description": "Our Rocket League trios compete in CRL and other collegiate circuits, mixing mechanical flair with rotation discipline."
+    "description": "Part car, part rocket, all skill – UCF's Rocket League team soars through the air and finds the back of the net with aerial precision. "
   },
   {
     "name": "Counter Strike 2",
     "slug": "counter-strike",
     "icon": "/CS2logo.png",
-    "description": "EUCF's CS team battles in collegiate Counter-Strike leagues, drilling executes, utility, and clutch decision-making week after week."
+    "description": "UCF's Counter-Strike 2 squad brings sharp aim and sharper strategy to every round, clutching plants and defusals when it matters most."
   },
   {
     "name": "Apex Legends",
     "slug": "apex-legends",
     "icon": "/APEXlogo.png",
-    "description": "Our Apex Legends squad competes in CCS and other collegiate Apex events, prioritizing rotations, edge play, and clean team fights."
+    "description": "Meet our Apex Legends squad – always ready to be the last ones standing. "
   },
   {
     "name": "League of Legends",
     "slug": "league-of-legends",
     "icon": "/LOLlogo.png",
-    "description": "EUCF's League of Legends roster competes in collegiate leagues including CLoL, scrimming regularly to stay sharp on macro and draft."
+    "description": "With clean mechanics and macro, UCF’s League of Legends team lights up the rift and bursts the enemy nexus with ease."
   },
   {
     "name": "Rainbow Six Siege",
     "slug": "rainbow-six-siege",
     "icon": "/R6logo.png",
-    "description": "Our Rainbow Six Siege team competes in collegiate Siege leagues, focusing on map control, utility usage, and disciplined site executes."
+    "description": "UCF's Rainbow Six Siege team thrives on tactics and teamwork, breaching, holding angles, and outsmarting the enemy site after site."
   },
   {
     "name": "Splatoon",
     "slug": "splatoon",
     "icon": "/SPLATOONlogo.png",
-    "description": "EUCF's Splatoon crew represents UCF in collegiate Splatoon competitions, bringing color and chaos to the inkling battlefield."
+    "description": "Meet UCF’s Splatoon crew –  here to fill the world with color and bring in the wins."
   },
   {
     "name": "SSBU",
     "slug": "ssbu",
     "icon": "/SSBUlogo.png",
-    "description": "Our Super Smash Bros. Ultimate players compete in collegiate Smash brackets and weekly community events around the UCF area."
+    "description": "UCF’s Super Smash Bros. Ultimate players are ready to crush their opponents off the platform, anytime, anywhere."
   }
 ]
