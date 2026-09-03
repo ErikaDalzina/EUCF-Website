@@ -78,32 +78,9 @@ Static site assets referenced by path (e.g. `/VALlogo.png` for title logos,
 served from `eucf-website/public/`) keep working as-is: the pipeline only acts
 on upload attachments and never touches path values in the image columns.
 
-**One-time setup** (Cloudflare dashboard):
-
-1. R2 → create bucket `eucf-images`, location hint **ENAM**, storage class
-   **Standard**. Not Infrequent Access: the library sits well inside R2's free
-   10 GB, while IA adds a per-GB retrieval fee on every CDN cache miss and a
-   30-day minimum storage duration on orphaned replacements.
-2. Bucket → Settings → Public access: leave the **r2.dev subdomain disabled**
-   (uncached, rate-limited, dev-only) and **Connect Domain** →
-   `assets.esportsatucf.com`. That hostname serves read-only GETs through
-   Cloudflare's CDN; the S3 API endpoint stays credential-only. It is already
-   listed in `img-src` in `eucf-website/public/_headers`.
-   The bucket is a public asset host — never put anything in it that isn't
-   meant to be world-readable.
-3. R2 → API tokens → create a token scoped to **`eucf-images` only** with
-   *Object Read & Write* (read is required for the HEAD-before-PUT dedup) and
-   **no expiry** → gives the access key id + secret. Rotate at officer
-   turnover; see the [runbook](docs/RUNBOOK.md#image-hosting-for-developers).
-4. Add the `R2_*` variables and the write-scoped `AIRTABLE_TOKEN` to the
-   Cloudflare Pages project's environment variables (Production + Preview),
-   marking the keys and tokens as **Secret / encrypted**, not plaintext.
-5. In Airtable, add an **attachment**-type field next to each image column:
-   `titles` → `icon upload`, `players` → `image upload`, `officers` →
-   `image upload`, `sponsors` → `logo upload`, `featuredstory` →
-   `image upload`, `about` → `image upload` (names must match `F` in
-   `eucf-website/scripts/lib/airtable.ts` exactly). The existing image columns
-   stay as they are, any text-ish type (long text, single line, URL) works.
+**Setting this up from scratch** — creating the R2 bucket, the API tokens, the
+Cloudflare Pages project, and the Airtable publish automation — is documented in
+**[docs/SETUP.md](docs/SETUP.md)**, along with the reasoning behind each choice.
 
 Old images left in R2 by replacements are ~20–400KB each and are deliberately
 not garbage-collected (the whole library is a few tens of MB against R2's free

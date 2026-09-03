@@ -207,9 +207,8 @@ soon" on the affected pages. That's expected and publishes fine.
 
 ## Publishing
 
-> Written ahead of the Cloudflare Pages setup. The steps are correct in shape,
-> but check the exact button and menu names against the dashboard the first time
-> through, and correct this page as you go.
+> Setting up the publish button itself — the deploy hook, the `deploy` table, and
+> the automation behind it — is documented in [SETUP.md](SETUP.md#part-4--publishing-from-airtable).
 
 Editing Airtable does **not** change the site. The site is rebuilt from scratch
 each time you publish, and whatever is in Airtable at that moment is what ships.
@@ -290,10 +289,8 @@ Cloudflare R2 bucket `eucf-images`. The bucket is **world-readable** — anythin
 put in it is public. Never use it for backups, exports, or member data.
 
 The R2 API token has no expiry, so image uploads can't silently break
-mid-semester. **Rotate it at officer turnover:** R2 → API Tokens → create a
-replacement (scoped to `eucf-images`, Object Read & Write) → update the
-`R2_ACCESS_KEY_ID` and `R2_SECRET_ACCESS_KEY` variables on the Cloudflare Pages
-project → revoke the old token.
+mid-semester. It should still be **rotated at officer turnover** — the procedure
+is in [SETUP.md](SETUP.md#rotating-credentials).
 
 If images stop updating, the token is the first thing to check: a bad token
 fails the image step only — the build still succeeds and the site still
