@@ -4,7 +4,6 @@ export interface PlayerSocials {
   instagram?: string;
   youtube?: string;
   tiktok?: string;
-  discord?: string;
 }
 
 export interface Player {

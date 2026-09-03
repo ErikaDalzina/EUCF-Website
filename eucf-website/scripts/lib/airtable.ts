@@ -62,7 +62,6 @@ export const F = {
   playerYoutube: "youtube",
   playerInstagram: "instagram",
   playerTiktok: "tiktok",
-  playerDiscord: "discord",
   // officers
   officerName: "name",
   officerPosition: "position",

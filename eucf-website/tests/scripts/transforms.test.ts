@@ -140,7 +140,7 @@ describe("socials", () => {
   });
 
   it("drops non-https links", () => {
-    const s = socials({ [F.playerDiscord]: "discord.gg/abc" });
+    const s = socials({ [F.playerX]: "x.com/player" });
     expect(s).toBeUndefined();
   });
 
