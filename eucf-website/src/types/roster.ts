@@ -3,6 +3,7 @@ export interface PlayerSocials {
   twitch?: string;
   instagram?: string;
   youtube?: string;
+  tiktok?: string;
   discord?: string;
 }
 

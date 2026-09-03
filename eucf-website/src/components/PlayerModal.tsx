@@ -19,8 +19,6 @@ interface SocialLink {
 const SOCIAL_LINKS: SocialLink[] = [
   { key: "x", label: "X", iconSrc: "/xIcon.png" },
   { key: "twitch", label: "Twitch", iconSrc: "/twitchIcon.png" },
-  { key: "instagram", label: "Instagram", iconSrc: "/instagramIcon.png" },
-  { key: "discord", label: "Discord", iconSrc: "/discordIcon.png" },
   {
     key: "youtube",
     label: "YouTube",
@@ -30,6 +28,9 @@ const SOCIAL_LINKS: SocialLink[] = [
       </svg>
     ),
   },
+  { key: "instagram", label: "Instagram", iconSrc: "/instagramIcon.png" },
+  { key: "tiktok", label: "TikTok", iconSrc: "/tiktokIcon.png" },
+  { key: "discord", label: "Discord", iconSrc: "/discordIcon.png" },
 ];
 
 export default function PlayerModal({ player, onClose }: PlayerModalProps) {

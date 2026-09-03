@@ -60,7 +60,7 @@ Two things to know:
 | `bio` | text | Optional, shown in the pop-up |
 | `image` | text / URL | Player photo. Filled in automatically from `image upload` |
 | `image upload` | attachment | Drop a new photo here |
-| `x`, `twitch`, `instagram`, `discord` | URL | Optional. **Must start with `https://`** or they are dropped |
+| `x`, `twitch`, `youtube`, `instagram`, `tiktok`, `discord` | URL | Optional. **Must start with `https://`** or they are dropped |
 
 How main vs sub is decided: **purely by which field the link is in.** There is no
 separate "main or sub" column. A player appears on every team listed across both

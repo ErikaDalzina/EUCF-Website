@@ -59,7 +59,9 @@ export const F = {
   playerImageUpload: "image upload",
   playerX: "x",
   playerTwitch: "twitch",
+  playerYoutube: "youtube",
   playerInstagram: "instagram",
+  playerTiktok: "tiktok",
   playerDiscord: "discord",
   // officers
   officerName: "name",

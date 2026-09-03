@@ -81,7 +81,9 @@ export function socials(f: Record<string, unknown>): Record<string, string> | un
   };
   add("x", F.playerX);
   add("twitch", F.playerTwitch);
+  add("youtube", F.playerYoutube);
   add("instagram", F.playerInstagram);
+  add("tiktok", F.playerTiktok);
   add("discord", F.playerDiscord);
   return Object.keys(s).length ? s : undefined;
 }

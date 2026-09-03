@@ -128,8 +128,15 @@ describe("socials", () => {
     const s = socials({
       [F.playerX]: "https://x.com/player",
       [F.playerTwitch]: "https://twitch.tv/player",
+      [F.playerYoutube]: "https://youtube.com/@player",
+      [F.playerTiktok]: "https://tiktok.com/@player",
     });
-    expect(s).toEqual({ x: "https://x.com/player", twitch: "https://twitch.tv/player" });
+    expect(s).toEqual({
+      x: "https://x.com/player",
+      twitch: "https://twitch.tv/player",
+      youtube: "https://youtube.com/@player",
+      tiktok: "https://tiktok.com/@player",
+    });
   });
 
   it("drops non-https links", () => {
