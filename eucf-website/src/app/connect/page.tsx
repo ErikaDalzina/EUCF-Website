@@ -3,11 +3,11 @@ import TitleHeader from "@/components/TitleHeader";
 
 // Email defaults to the address already used in the site footer.
 const SOCIALS = [
-  { label: "Discord", iconSrc: "/discordIcon.png", href: "https://discord.com/invite/MhYvsbCqXR", external: true },
-  { label: "Instagram", iconSrc: "/instagramIcon.png", href: "https://www.instagram.com/esportsatucf/?hl=en", external: true },
-  { label: "TikTok", iconSrc: "/tiktokIcon.png", href: "https://www.tiktok.com/@esportsatucf", external: true },
-  { label: "Twitch", iconSrc: "/twitchIcon.png", href: "https://www.twitch.tv/esportsatucf", external: true },
-  { label: "X", iconSrc: "/xIcon.png", href: "https://x.com/EsportsatUCF", external: true },
+  { label: "Discord", iconSrc: "/discordIcon.svg", href: "https://discord.com/invite/MhYvsbCqXR", external: true },
+  { label: "Instagram", iconSrc: "/instagramIcon.svg", href: "https://www.instagram.com/esportsatucf/?hl=en", external: true },
+  { label: "TikTok", iconSrc: "/tiktokIcon.svg", href: "https://www.tiktok.com/@esportsatucf", external: true },
+  { label: "Twitch", iconSrc: "/twitchIcon.svg", href: "https://www.twitch.tv/esportsatucf", external: true },
+  { label: "X", iconSrc: "/xIcon.svg", href: "https://x.com/EsportsatUCF", external: true },
   {
     label: "Email",
     iconSrc: "/email_logo.svg",
@@ -27,7 +27,7 @@ export default function Connect() {
       <div className="mx-auto max-w-6xl px-6 md:px-16 pt-10 pb-20">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
           {/* Left: 6 social/contact icons, 2 per row -> 3 rows */}
-          <ul className="grid grid-cols-2 w-fit gap-x-6 sm:gap-x-12 gap-y-2 mx-auto md:mx-0">
+          <ul className="grid grid-cols-2 w-fit gap-8 sm:gap-12 mx-auto md:mx-0">
             {SOCIALS.map((s) => (
               <li key={s.label} className="flex justify-center">
                 <a
