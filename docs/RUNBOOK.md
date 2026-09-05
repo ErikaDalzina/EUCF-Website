@@ -40,12 +40,35 @@ Airtable is only live after a rebuild.**
 | `team name` | text | The heading above the roster, e.g. "Marvel Rivals A Team" |
 | `title` | link → `titles` | Which game page this team appears on |
 
-Two things to know:
+Three things to know:
 
 - **Rosters are grouped by `team name` as text.** Two team rows with the same
   name under the same title merge into a single roster on the site.
 - **If `title` is empty, every player on that team disappears from the site.**
   The team has no page to appear on.
+- **Team sections appear in the order the rows sit in this table** — the higher
+  row renders higher on the game page. Drag a row to reorder. `team name` is
+  only a heading and has no say in the order, so "Gold" / "Black" or
+  "Knights" / "Academy" work exactly as well as "A Team" / "B Team".
+
+A title's rows don't have to be next to each other — only which row is higher
+matters. With this grid:
+
+| row | team name |
+| --- | --- |
+| 1 | Marvel Rivals B Team |
+| 2 | Valorant A Team |
+| 3 | Valorant B Team |
+| 4 | Marvel Rivals A Team |
+
+the Marvel Rivals page shows **B Team then A Team**, and Valorant shows A then B.
+Keeping each game's rows together is still worth doing so the page order is
+readable at a glance — but it's a courtesy to the next editor, not a rule.
+
+Two consequences worth knowing: **dragging a row silently reorders a game page**,
+and **a sort on the `teams` Grid view breaks this** — Airtable disables
+drag-to-reorder on a sorted view and hands the site the sorted order instead.
+Leave that view unsorted.
 
 ### `players` — one row per person
 
@@ -99,6 +122,14 @@ change.
 Every table except `players` is read through a view named **`Grid view`**, which
 is what gives them their top-to-bottom order. Renaming that view doesn't break
 the build, but the order becomes arbitrary (a warning appears in the build log).
+
+For `teams` that order is what decides which roster renders first on a game page
+(see [`teams`](#teams--one-row-per-roster) above), so a renamed or sorted
+`teams` view scrambles the A/B/C order rather than just shuffling a fetch.
+
+`titles` is the exception: the Titles page lists games **alphabetically by
+`name`**, whatever order the rows are in. Dragging rows in `titles` changes
+nothing you can see on the site.
 
 `players` is read without a view — its order comes from the `order` field
 instead, so it doesn't matter how the grid is sorted.
@@ -163,6 +194,30 @@ on one and a sub on the other, put each team in the matching field.
 
 **Remove a player** — delete the row, or clear both team links. Either removes
 them from the site; clearing the links keeps their record around.
+
+**Add a team to a game** — add a row to `teams` with a `team name` and the
+`title` link, drag it into position among that game's other rows, then link
+players to it from `main teams` / `sub teams`. A C team needs no code change and
+no developer; the page grows a third section on the next publish.
+
+> **The team won't appear until at least one player links to it.** Rosters are
+> built from player links, so a `teams` row nobody is on produces nothing at all
+> — no heading, no empty section. Publishing the row by itself looks like a
+> broken publish, but the row is fine; there is simply nothing on it yet.
+
+**Remove a team** — clear it from every player's `main teams` / `sub teams`, then
+delete the row. If it was the game's only team, the page still publishes and
+shows "Roster coming soon; check back later!".
+
+**Add a game title** — add a row to `titles` with `name`, `slug`, `description`,
+and a logo in `icon upload`. The page at `/titles/<slug>`, its card on the Titles
+page, and its sitemap entry all appear automatically.
+
+**Retire a game title** — delete its `teams` rows **before** the `titles` row. A
+team whose `title` link points at nothing silently drops all of its players
+instead of failing the build, so doing it in the other order hides the mistake.
+Note the old `/titles/<slug>` URL will 404 afterwards — there is no redirect, so
+anything linking to it (socials, printed material) goes dead.
 
 **Change a photo** — drag a new image into the `image upload` field. See
 [Images](../README.md#images-airtable--r2-pipeline) in the README for how the
