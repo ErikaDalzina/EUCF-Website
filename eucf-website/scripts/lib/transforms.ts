@@ -104,15 +104,33 @@ export function groupPlayers(
 
   // team record id -> { titleSlug, label }
   const teamById = new Map<string, { titleSlug: string; label: string }>();
+  // Seeded in `teams` fetch order — the table is read through its view, so Map
+  // insertion order is the order the rows sit in Airtable.
+  const byGame = new Map<string, Map<string, Team>>();
+
   for (const tm of teams) {
     const titleId = firstLink(tm.fields[F.teamTitleLink]);
-    teamById.set(tm.id, {
-      titleSlug: titleId ? titleSlugById.get(titleId) ?? "" : "",
-      label: str(tm.fields[F.teamName]),
-    });
+    const titleSlug = titleId ? titleSlugById.get(titleId) ?? "" : "";
+    const label = str(tm.fields[F.teamName]);
+    teamById.set(tm.id, { titleSlug, label });
+
+    if (!titleSlug)
+    {
+      continue;
+    }
+
+    if (!byGame.has(titleSlug))
+    {
+      byGame.set(titleSlug, new Map());
+    }
+
+    const teamsMap = byGame.get(titleSlug)!;
+
+    if (!teamsMap.has(label)) {
+      teamsMap.set(label, { label, main: [], subs: [] });
+    }
   }
 
-  const byGame = new Map<string, Map<string, Team>>();
   const sortedPlayers = [...players].sort(
     (a, b) => Number(a.fields[F.playerOrder] ?? 0) - Number(b.fields[F.playerOrder] ?? 0)
   );
@@ -194,12 +212,18 @@ export function groupPlayers(
     console.log(`[sync-airtable] ${multiTeam} player(s) on more than one team.`);
   }
 
-  // Order teams within each game by label so "… A Team" comes before "… B Team".
+  // Teams are seeded from the `teams` table, so drop the ones no player landed
+  // on: an unlinked row must not publish an empty section, and a title with no
+  // players at all must stay absent or validate.ts can't tell every link broke.
   const playersOut: Record<string, Team[]> = {};
   for (const [slug, teamsMap] of byGame) {
-    playersOut[slug] = [...teamsMap.values()].sort((a, b) =>
-      a.label.localeCompare(b.label)
+    const roster = [...teamsMap.values()].filter(
+      (t) => t.main.length > 0 || t.subs.length > 0
     );
+
+    if (roster.length > 0) {
+      playersOut[slug] = roster;
+    }
   }
   return playersOut;
 }

@@ -194,13 +194,13 @@ describe("groupPlayers", () => {
     );
 
     expect(Object.keys(out)).toEqual(["valorant"]);
-    // Teams sorted by label: A Team before B Team.
-    expect(out.valorant.map((t) => t.label)).toEqual(["VAL A Team", "VAL B Team"]);
+    // Teams follow the teams-table row order, not the alphabet: B is row 0 here.
+    expect(out.valorant.map((t) => t.label)).toEqual(["VAL B Team", "VAL A Team"]);
+    expect(out.valorant[0].main).toEqual([]);
+    expect(out.valorant[0].subs.map((p) => p.ign)).toEqual(["Benchwarmer"]);
     // Main sorted by order; "sub teams" links land in subs.
-    expect(out.valorant[0].main.map((p) => p.ign)).toEqual(["Alpha", "Bravo"]);
-    expect(out.valorant[0].subs.map((p) => p.ign)).toEqual(["Subby"]);
-    expect(out.valorant[1].main).toEqual([]);
-    expect(out.valorant[1].subs.map((p) => p.ign)).toEqual(["Benchwarmer"]);
+    expect(out.valorant[1].main.map((p) => p.ign)).toEqual(["Alpha", "Bravo"]);
+    expect(out.valorant[1].subs.map((p) => p.ign)).toEqual(["Subby"]);
   });
 
   it("fans a player out across teams in different titles", () => {
@@ -224,6 +224,74 @@ describe("groupPlayers", () => {
     expect(out.valorant.map((t) => t.label)).toEqual(["VAL A Team", "VAL B Team"]);
     expect(out.valorant[0].main.map((p) => p.ign)).toEqual(["Ghost"]);
     expect(out.valorant[1].main.map((p) => p.ign)).toEqual(["Ghost"]);
+  });
+
+  it("orders teams by row, so labels need not sort alphabetically", () => {
+    const out = groupPlayers(
+      [title("t1", "marvel-rivals")],
+      [team("tm1", "Gold", "t1"), team("tm2", "Black", "t1"), team("tm3", "Academy", "t1")],
+      [
+        // Reverse order, so bucket insertion order can't be what's under test.
+        player("p1", { [F.playerIgn]: "Ghost", [F.playerMainTeams]: ["tm3"] }),
+        player("p2", { [F.playerIgn]: "Echo", [F.playerMainTeams]: ["tm2"] }),
+        player("p3", { [F.playerIgn]: "Delta", [F.playerMainTeams]: ["tm1"] }),
+      ]
+    );
+
+    expect(out["marvel-rivals"].map((t) => t.label)).toEqual(["Gold", "Black", "Academy"]);
+  });
+
+  it("orders teams by row when titles interleave in the grid", () => {
+    const out = groupPlayers(
+      [title("t1", "marvel-rivals"), title("t2", "valorant")],
+      [
+        team("tm1", "MR B Team", "t1"),
+        team("tm2", "VAL A Team", "t2"),
+        team("tm3", "VAL B Team", "t2"),
+        team("tm4", "MR A Team", "t1"),
+      ],
+      [
+        player("p1", {
+          [F.playerIgn]: "Ghost",
+          [F.playerMainTeams]: ["tm1", "tm2", "tm3", "tm4"],
+        }),
+      ]
+    );
+
+    // Rows of one title need not be adjacent — only which row is higher matters.
+    expect(out["marvel-rivals"].map((t) => t.label)).toEqual(["MR B Team", "MR A Team"]);
+    expect(out.valorant.map((t) => t.label)).toEqual(["VAL A Team", "VAL B Team"]);
+  });
+
+  it("drops a team row no player is linked to", () => {
+    const out = groupPlayers(
+      [title("t1", "valorant")],
+      [team("tm1", "VAL A Team", "t1"), team("tm2", "VAL C Team", "t1")],
+      [player("p1", { [F.playerIgn]: "Ghost", [F.playerMainTeams]: ["tm1"] })]
+    );
+
+    expect(out.valorant.map((t) => t.label)).toEqual(["VAL A Team"]);
+  });
+
+  it("omits a title whose teams have no players, so the empty-output guard still fires", () => {
+    const out = groupPlayers(
+      [title("t1", "valorant"), title("t2", "splatoon")],
+      [team("tm1", "VAL A Team", "t1"), team("tm2", "SPL A Team", "t2")],
+      [player("p1", { [F.playerIgn]: "Ghost", [F.playerMainTeams]: ["tm1"] })]
+    );
+
+    expect(Object.keys(out)).toEqual(["valorant"]);
+  });
+
+  it("returns nothing when every team link is broken", () => {
+    // validate.ts treats "players fetched but zero grouped" as a build failure.
+    const out = groupPlayers(
+      [title("t1", "valorant")],
+      [team("tm1", "VAL A Team", "t1")],
+      [player("p1", { [F.playerIgn]: "Ghost", [F.playerMainTeams]: ["tmGone"] })]
+    );
+
+    expect(Object.keys(out)).toEqual([]);
   });
 
   it("tracks main vs sub per team, not per player", () => {
