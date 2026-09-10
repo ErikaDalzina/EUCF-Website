@@ -182,7 +182,7 @@ publish a site with every roster missing, the build stops and the previous
 deploy stays live. This one needs a developer.
 
 **An empty roster is not an error.** A title with no players publishes normally
-and shows "Roster coming soon; check back later!" on its page. That's expected
+and shows "Roster coming soon" on its page. That's expected
 for a new game, or during intake after a season changeover.
 
 ## Editing content
@@ -220,7 +220,7 @@ no developer; the page grows a third section on the next publish.
 
 **Remove a team** — clear it from every player's `main teams` / `sub teams`, then
 delete the row. If it was the game's only team, the page still publishes and
-shows "Roster coming soon; check back later!".
+shows "Roster coming soon".
 
 **Add a game title** — add a row to `titles` with `name`, `slug`, `description`,
 and a logo in `icon upload`. The page at `/titles/<slug>`, its card on the Titles
