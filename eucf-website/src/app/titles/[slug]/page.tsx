@@ -2,6 +2,7 @@ import { Fragment } from "react";
 import { notFound } from "next/navigation";
 import TitleHeader from "@/components/TitleHeader";
 import TeamRoster from "@/components/TeamRoster";
+import RosterComingSoon from "@/components/RosterComingSoon";
 import { TITLES } from "@/data/titles";
 import { rosterFor } from "@/data/rosters";
 
@@ -33,9 +34,7 @@ export default async function TitlePage({ params }: TitlePageProps) {
       <TitleHeader title={t.name} description={t.description} />
       <div className="max-w-6xl mx-auto px-6 md:px-16 py-12 space-y-16">
         {roster.length === 0 && (
-          <p className="text-center text-lg text-zinc-600">
-            Roster coming soon; check back later!
-          </p>
+          <RosterComingSoon gameName={t.name} icon={t.icon} />
         )}
         {roster.map((team, i) => (
           <Fragment key={team.label}>
