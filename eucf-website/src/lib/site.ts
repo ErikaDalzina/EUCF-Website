@@ -1,5 +1,7 @@
-// TODO: replace with the production domain before launch (used for
-// metadataBase, Open Graph URLs, robots.txt, and sitemap.xml).
+// Production domain. Used for metadataBase, Open Graph URLs, robots.txt, and
+// sitemap.xml. Images are served from assets.esportsatucf.com, which is pinned
+// separately in the CSP img-src of public/_headers — keep the two in step with
+// R2_PUBLIC_BASE_URL.
 export const SITE_URL = "https://esportsatucf.com";
 
 export const SITE_NAME = "Esports at UCF (EUCF)";
