@@ -125,10 +125,23 @@ export function pendingOf(job: ImageJob): Pending[] {
   return out;
 }
 
+// Larger than the Airtable JSON budget because these move real bytes.
+const DOWNLOAD_TIMEOUT_MS = 60_000;
+
 async function download(att: Attachment): Promise<{ buf: Buffer; type: string }> {
   // Attachment URLs are pre-signed — no auth header, but they expire ~2h
   // after the records were fetched, which is far longer than a build.
-  const res = await fetch(att.url);
+  let res: Response;
+  try {
+    res = await fetch(att.url, { signal: AbortSignal.timeout(DOWNLOAD_TIMEOUT_MS) });
+  } catch (e) {
+    if ((e as Error)?.name === "TimeoutError") {
+      throw new Error(
+        `download timed out after ${DOWNLOAD_TIMEOUT_MS}ms: ${att.filename ?? att.url.slice(0, 60)}`
+      );
+    }
+    throw e;
+  }
   if (!res.ok) {
     throw new Error(`download failed ${res.status}: ${att.filename ?? att.url.slice(0, 60)}`);
   }
@@ -267,6 +280,10 @@ export async function syncImages(jobs: ImageJob[]): Promise<void> {
     region: "auto",
     endpoint: `https://${env.accountId}.r2.cloudflarestorage.com`,
     credentials: { accessKeyId: env.accessKeyId, secretAccessKey: env.secretAccessKey },
+    requestHandler: {
+      requestTimeout: DOWNLOAD_TIMEOUT_MS,
+      connectionTimeout: 10_000,
+    },
   });
 
   let failed = 0;

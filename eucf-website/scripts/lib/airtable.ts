@@ -99,6 +99,23 @@ export type Attachment = {
   size?: number;
 };
 
+// Per-request, not per-run: every paginated page gets its own budget, so a
+// large base is unaffected and only a genuinely hung connection trips it.
+// Without this a stalled socket hangs the Cloudflare build until its own
+// ~20-minute timeout, with nothing useful in the log.
+const REQUEST_TIMEOUT_MS = 30_000;
+
+async function timedFetch(url: URL | string, init: RequestInit = {}): Promise<Response> {
+  try {
+    return await fetch(url, { ...init, signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) });
+  } catch (e) {
+    if ((e as Error)?.name === "TimeoutError") {
+      throw new Error(`Airtable request timed out after ${REQUEST_TIMEOUT_MS}ms: ${url}`);
+    }
+    throw e;
+  }
+}
+
 export async function fetchAll(table: string, view?: string): Promise<AirtableRecord[]> {
   const records: AirtableRecord[] = [];
   let offset: string | undefined;
@@ -116,11 +133,11 @@ export async function fetchAll(table: string, view?: string): Promise<AirtableRe
       url.searchParams.set("offset", offset);
     }
 
-    let res = await fetch(url, { headers: { Authorization: `Bearer ${TOKEN}` } });
+    let res = await timedFetch(url, { headers: { Authorization: `Bearer ${TOKEN}` } });
 
     for (let attempt = 0; res.status === 429 && attempt < 5; attempt++) {
       await new Promise((r) => setTimeout(r, 1000 * (attempt + 1)));
-      res = await fetch(url, { headers: { Authorization: `Bearer ${TOKEN}` } });
+      res = await timedFetch(url, { headers: { Authorization: `Bearer ${TOKEN}` } });
     }
 
     if (!res.ok) {
@@ -157,7 +174,7 @@ export async function patchRecords(table: string, updates: RecordUpdate[]): Prom
     }
 
     const request = () =>
-      fetch(endpoint, {
+      timedFetch(endpoint, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${TOKEN}`,
