@@ -14,7 +14,7 @@
  *
  * Run with:  npm run sync:content   (or it runs automatically via `prebuild`)
  */
-import { existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { F, TABLES, VIEWS, fetchAll, hasAirtableCreds } from "./lib/airtable";
 import { groupPlayers, httpsUrl, imageUrl, str } from "./lib/transforms";
@@ -161,14 +161,10 @@ async function main(): Promise<void> {
   );
 }
 
+// Credentials were present (checked above), so reaching here means a real build
+// failed to read Airtable. Committed players.json is empty by design, so exiting
+// 0 would deploy a site with no rosters. Failing keeps the last good deploy live.
 main().catch((e) => {
   console.error("[sync-airtable] sync failed:", e);
-  // Fall back to the committed generated JSON if it's all present, so a
-  // transient Airtable/network failure doesn't break the build.
-  const names = ["players", "titles", "officers", "sponsors", "featuredstory", "about"];
-  if (names.every((n) => existsSync(resolve(OUT_DIR, `${n}.json`)))) {
-    console.warn("[sync-airtable] using existing committed generated JSON.");
-    process.exit(0);
-  }
   process.exit(1);
 });
