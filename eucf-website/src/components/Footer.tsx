@@ -28,7 +28,8 @@ export default function Footer() {
           <div className="flex flex-col text-left">
             <div className="space-y-10">
               <p className="text-base md:text-xl leading-snug font-normal">
-                Copyright © 2026, Esports at UCF (EUCF). All rights reserved.
+                Copyright © {new Date().getFullYear()}, Esports at UCF (EUCF).
+                All rights reserved.
               </p>
               <p className="text-base md:text-xl leading-snug font-normal">
                 For inquiries, reach us at:{" "}
