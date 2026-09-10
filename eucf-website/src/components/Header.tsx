@@ -26,6 +26,8 @@ export default function Header() {
             src="/esportsLogo.png"
             alt="EUCF Esports Logo"
             fill
+            priority
+            sizes="(min-width: 768px) 160px, 128px"
             className="object-contain object-left"
           />
         </Link>
