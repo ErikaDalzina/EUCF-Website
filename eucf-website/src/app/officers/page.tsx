@@ -1,7 +1,15 @@
+import type { Metadata } from "next";
 import OfficersCarousel from "@/components/OfficersCarousel";
 import TitleHeader from "@/components/TitleHeader";
 import type { Officer } from "@/components/OfficerCard";
 import officersData from "@/data/generated/officers.json";
+
+export const metadata: Metadata = {
+  title: "Officers",
+  description:
+    "Meet the officers who lead Esports at UCF and grow the university's " +
+    "esports scene through competition, collaboration, and community.",
+};
 
 const officers: Officer[] = officersData as Officer[];
 

@@ -1,6 +1,14 @@
+import type { Metadata } from "next";
 import TitleHeader from "@/components/TitleHeader";
 import TitleCard from "@/components/TitleCard";
 import { TITLES } from "@/data/titles";
+
+export const metadata: Metadata = {
+  title: "Titles",
+  description:
+    "Explore the games Esports at UCF competes in. Open any title to meet the " +
+    "team and learn more.",
+};
 
 export default function Titles() {
   const sortedTitles = [...TITLES].sort((a, b) => a.name.localeCompare(b.name));

@@ -1,5 +1,13 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import TitleHeader from "@/components/TitleHeader";
+
+export const metadata: Metadata = {
+  title: "Contact Us",
+  description:
+    "Get in touch with Esports at UCF on Discord, Instagram, TikTok, Twitch, " +
+    "X, or by email.",
+};
 
 // Email defaults to the address already used in the site footer.
 const SOCIALS = [

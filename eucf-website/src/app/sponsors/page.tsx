@@ -1,6 +1,14 @@
+import type { Metadata } from "next";
 import TitleHeader from "@/components/TitleHeader";
 import SponsorCard, { SponsorPlaceholderCard } from "@/components/SponsorCard";
 import { SPONSORS } from "@/data/sponsors";
+
+export const metadata: Metadata = {
+  title: "Sponsors",
+  description:
+    "Meet the sponsors backing Esports at UCF and supporting collegiate " +
+    "competitive gaming at the University of Central Florida.",
+};
 
 export default function Sponsors() {
   const placeholders = 4 - SPONSORS.length;

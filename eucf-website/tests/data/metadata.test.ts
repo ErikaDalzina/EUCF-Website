@@ -2,7 +2,12 @@ import { describe, expect, it } from "vitest";
 import sitemap from "@/app/sitemap";
 import robots from "@/app/robots";
 import { generateMetadata, generateStaticParams } from "@/app/titles/[slug]/page";
-import { SITE_URL } from "@/lib/site";
+import { metadata as aboutMeta } from "@/app/about/page";
+import { metadata as connectMeta } from "@/app/connect/page";
+import { metadata as officersMeta } from "@/app/officers/page";
+import { metadata as sponsorsMeta } from "@/app/sponsors/page";
+import { metadata as titlesMeta } from "@/app/titles/page";
+import { SITE_NAME, SITE_URL } from "@/lib/site";
 import { TITLES } from "@/data/titles";
 
 describe("sitemap", () => {
@@ -25,6 +30,29 @@ describe("robots", () => {
       rules: { userAgent: "*", allow: "/" },
       sitemap: `${SITE_URL}/sitemap.xml`,
     });
+  });
+});
+
+describe("static page metadata", () => {
+  const pages = [
+    ["about", aboutMeta],
+    ["connect", connectMeta],
+    ["officers", officersMeta],
+    ["sponsors", sponsorsMeta],
+    ["titles", titlesMeta],
+  ] as const;
+
+  it.each(pages)("%s exports its own title and description", (_name, meta) => {
+    expect(meta.title).toBeTruthy();
+    expect(meta.description).toBeTruthy();
+    // Without an own title a page silently inherits the layout default, which
+    // is how all six pages ended up with an identical <title>.
+    expect(meta.title).not.toBe(SITE_NAME);
+  });
+
+  it("gives every page a distinct title", () => {
+    const titles = pages.map(([, meta]) => meta.title);
+    expect(new Set(titles).size).toBe(pages.length);
   });
 });
 

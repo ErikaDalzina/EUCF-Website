@@ -1,6 +1,14 @@
+import type { Metadata } from "next";
 import AboutPillars from "@/components/AboutPillars";
 import TitleHeader from "@/components/TitleHeader";
 import { ABOUT_SECTIONS } from "@/data/about";
+
+export const metadata: Metadata = {
+  title: "About Us",
+  description:
+    "Esports at UCF is the official Competitive Gaming Sports Club at the " +
+    "University of Central Florida. Here's what the club is built on.",
+};
 
 export default function About() {
   return (
