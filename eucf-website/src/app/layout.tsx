@@ -32,6 +32,9 @@ export const metadata: Metadata = {
     siteName: "EUCF",
     locale: "en_US",
     type: "website",
+    // Portrait 280x381, so consumers render the small square card. That's why
+    // twitter.card stays the default `summary` rather than summary_large_image.
+    images: ["/knighto.png"],
   },
 };
 
