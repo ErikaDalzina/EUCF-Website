@@ -46,7 +46,9 @@ variables. GitHub only stores the code.
 
 GitHub Actions runs lint, typecheck, tests, and a build on every push, but **never
 deploys and holds no secrets**. Without Airtable credentials the sync exits 0 and CI
-builds against the committed placeholder JSON. That keeps CI deterministic and keeps
+builds against the committed JSON — which carries the real titles, officers, sponsors
+and about content, but an intentionally empty `players.json`, so CI renders every game
+page in its "Roster coming soon" state. That keeps CI deterministic and keeps
 write-scoped production credentials out of a system that runs on every pull request.
 
 ## Decisions worth understanding before you change anything
@@ -151,8 +153,19 @@ to match `img-src` in `public/_headers` exactly or images are silently blocked w
 server-side error.
 
 If any `R2_*` variable is missing the image step skips with a warning and the build still
-succeeds. If the Airtable variables are missing the site publishes the committed
-placeholder roster — see [RUNBOOK](RUNBOOK.md#when-a-publish-doesnt-go-through), step 5.
+succeeds.
+
+The Airtable variables have two distinct failure modes:
+
+- **Present but not working** (expired or wrong token, renamed table, Airtable down or
+  rate-limiting) — the build **fails**. Rosters exist only in Airtable, so there is
+  nothing to fall back to and publishing would strip every roster off the site. The
+  previous deploy stays live; see
+  [RUNBOOK](RUNBOOK.md#when-a-publish-doesnt-go-through), step 5.
+- **Absent entirely** — the sync skips itself and exits 0, because that is how CI builds
+  without secrets. On Cloudflare that means a **successful** deploy with no rosters. If
+  the site suddenly shows "Roster coming soon" everywhere, check that these variables
+  still exist on the Pages project.
 
 > Preview deployments share the same Airtable base and R2 bucket. This is harmless —
 > content-hash keys mean a preview upload just pre-warms an object production would have

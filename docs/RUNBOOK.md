@@ -12,6 +12,12 @@ built as static HTML and served by Cloudflare Pages.
 Nothing is read from Airtable while people are browsing the site. **A change in
 Airtable is only live after a rebuild.**
 
+**Roster data lives only in Airtable.** `players.json` is committed to the repo
+empty (`{}`) on purpose, so no student's name, handle or photo is stored in git
+history. Real rosters exist only in the Airtable base and are pulled in fresh by
+each Cloudflare build. Never commit a synced `players.json` — see
+[Season changeover](#season-changeover).
+
 ## Airtable field contract
 
 > **Column names are code.** Every field below is looked up by its exact name in
@@ -150,6 +156,8 @@ true, the build stops:
 - **Player rows exist in Airtable but none of them landed on any team**
 - Any image, logo, `website`, or `href` that isn't `https://` or a `/path`
 - A roster grouped under a slug with no matching title
+- **The sync couldn't read Airtable at all** — a wrong or expired token, a
+  renamed table, or Airtable being down or rate-limiting
 
 **A failed build changes nothing.** The site that's currently live stays live,
 exactly as it is. There is no half-published state, and nothing to undo — fix
@@ -167,6 +175,11 @@ two rosters, or two different people who picked similar handles.
 empty roster. It means the links stopped resolving: a renamed column, or teams
 missing their `title` link. Check `main teams` / `sub teams` on `players`, and
 `title` on `teams`.
+
+**"The sync couldn't read Airtable"** — because rosters aren't stored in the
+repo, a build that can't reach Airtable has no roster data at all. Rather than
+publish a site with every roster missing, the build stops and the previous
+deploy stays live. This one needs a developer.
 
 **An empty roster is not an error.** A title with no players publishes normally
 and shows "Roster coming soon; check back later!" on its page. That's expected
@@ -226,25 +239,17 @@ pipeline works and what happens to the original.
 ## Season changeover
 
 Airtable's free tier caps the base at 1,000 records, so old rosters can't
-accumulate there. **Git is the archive** — every sync commits the generated JSON,
-so each season is preserved permanently in the repo.
+accumulate there. They have to be archived somewhere before you clear them.
 
-**Archive before you clear anything:**
+> **Git is no longer that archive.** `players.json` is committed empty so student
+> personal data stays out of the repo's history — do **not** run
+> `npm run sync:content` and commit the result to snapshot a season. Once
+> something is committed and pushed, removing it later means rewriting history.
 
-```bash
-cd eucf-website
-npm run sync:content
-git add src/data/generated/
-git commit -m "chore: snapshot 2026-27 roster"
-git tag roster-2026-27
-git push origin main --tags
-```
-
-To read a past season back:
-
-```bash
-git show roster-2026-27:eucf-website/src/data/generated/players.json
-```
+**Archive before you clear anything.** Export the `players` and `teams` tables
+to CSV from Airtable (**⋯ → Download CSV** on each table) and store them
+wherever the club keeps its records — the officers' shared Drive is the obvious
+home. Keep it somewhere the next officer team will actually inherit.
 
 Then, in order:
 
@@ -315,11 +320,17 @@ the field you changed is one the sync actually reads — see
 [Airtable field contract](#airtable-field-contract). A field the sync ignores
 will never appear on the site no matter how many times you publish.
 
-**5. Rosters show `The Goat`, `Player2`, `Player3`…?**
-Those are placeholder names. The build couldn't reach Airtable and fell back to
-the sample data committed in the repo. The Airtable environment variables on the
-Cloudflare Pages project are missing, wrong, or the token expired. This one needs
-a developer.
+**5. Build log says `[sync-airtable] sync failed:`?**
+The build couldn't read Airtable — most likely the token on the Cloudflare Pages
+project is missing, wrong, or expired, but a renamed table or an Airtable outage
+does it too. Rosters aren't stored in the repo, so rather than publish a site
+with every roster missing, the build stops and the previous deploy stays live.
+This one needs a developer.
+
+**6. Every game page says "Roster coming soon" but the build succeeded?**
+That's Airtable returning zero players, not a failure — the `players` table is
+empty, or the `main teams` / `sub teams` links are all unset. Check the table
+before assuming the site is broken.
 
 ## Rolling back
 

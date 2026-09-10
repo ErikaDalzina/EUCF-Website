@@ -8,6 +8,13 @@ Built with [Next.js](https://nextjs.org) (static export) and styled with
 Tailwind CSS. Roster and content data is synced from Airtable at build time into
 `eucf-website/src/data/generated/*.json` by `eucf-website/scripts/sync-airtable.ts`.
 
+> **Roster data is never committed.** `src/data/generated/players.json` is
+> checked in empty (`{}`) so no student's name, handle, or photo lands in git
+> history. Real rosters live only in Airtable and are pulled in fresh by each
+> Cloudflare build. Don't commit a synced `players.json`. A build that can't
+> reach Airtable **fails** rather than publish a site with no rosters, which
+> leaves the previous deploy live.
+
 > Editing rosters or other content in Airtable? See the
 > **[Content Runbook](docs/RUNBOOK.md)**: field names, what fails a build, and
 > the season changeover process.
