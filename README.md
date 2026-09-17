@@ -86,7 +86,7 @@ served from `eucf-website/public/`) keep working as-is: the pipeline only acts
 on upload attachments and never touches path values in the image columns.
 
 **Setting this up from scratch** — creating the R2 bucket, the API tokens, the
-Cloudflare Pages project, and the Airtable publish automation — is documented in
+Cloudflare Worker, and the Airtable publish automation — is documented in
 **[docs/SETUP.md](docs/SETUP.md)**, along with the reasoning behind each choice.
 
 Old images left in R2 by replacements are ~20–400KB each and are deliberately

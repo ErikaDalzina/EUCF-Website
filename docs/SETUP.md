@@ -1,7 +1,7 @@
 # Infrastructure Setup
 
 For developers standing up this site's hosting — a new Cloudflare account, a rebuilt
-Pages project, or a handover to the next maintainer.
+Worker, or a handover to the next maintainer.
 
 - Editing content day to day → [Content Runbook](RUNBOOK.md)
 - Running the site locally → [README](../README.md)
@@ -15,12 +15,12 @@ You need admin access to three things:
 
 | System | Owns |
 | --- | --- |
-| Cloudflare account (club-owned) | the domain, Pages, R2 |
+| Cloudflare account (club-owned) | the domain, the Worker, R2 |
 | Airtable base (club-owned) | all site content |
-| GitHub repository | the code Pages builds from |
+| GitHub repository | the code the Worker builds from |
 
 `esportsatucf.com` must already be an **active zone** in that Cloudflare account. Both the
-R2 custom domain and the Pages custom domain require it.
+R2 custom domain and the Worker custom domain require it.
 
 ## How it fits together
 
@@ -28,7 +28,7 @@ R2 custom domain and the Pages custom domain require it.
 flowchart TD
     AT[Airtable base<br/>content + image uploads]
     GH[GitHub repo]
-    CF[Cloudflare Pages build]
+    CF[Cloudflare Workers build]
     R2[(R2 bucket<br/>eucf-images)]
     SITE[esportsatucf.com<br/>static HTML on CDN]
 
@@ -41,7 +41,7 @@ flowchart TD
 ```
 
 Two things trigger a deploy — an officer ticking `publish` in Airtable, and a developer
-pushing to `main` — and **both build on Cloudflare**, using Cloudflare Pages environment
+pushing to `main` — and **both build on Cloudflare**, using the Worker's build
 variables. GitHub only stores the code.
 
 GitHub Actions runs lint, typecheck, tests, and a build on every push, but **never
@@ -59,7 +59,7 @@ write-scoped production credentials out of a system that runs on every pull requ
 | Custom domain, **r2.dev disabled** | `r2.dev` is uncached and rate-limited, intended for development. A custom domain proxies through Cloudflare's CDN: real edge caching, free egress, WAF and Cache Rules coverage. |
 | Bucket is **public-read, credential-write** | `assets.esportsatucf.com` serves read-only GETs of individual objects. The S3 API endpoint stays credential-only — no listing, no writes without the token. |
 | API token scoped to **one bucket**, no expiry | An expiring token fails *silently* — image sync errors don't fail the build, so the site would publish without new photos and nobody would notice. Rotation is tied to officer turnover instead. |
-| Secrets live in **Pages**, not GitHub | See above. Also halves the rotation surface. |
+| Secrets live in **Cloudflare build variables**, not GitHub | See above. Also halves the rotation surface. |
 | No Tiered Cache, no Hotlink Protection | Content-hash keys with `immutable` headers already cache at the ceiling; misses cost one Class B op against a 10M/month free tier. Hotlink Protection can challenge legitimate image requests, and R2 egress is free. |
 
 > **The bucket is a public asset host.** Anything placed in it is world-readable. Never
@@ -114,38 +114,47 @@ Your **Account ID** is on the R2 overview page. It is a separate value from the 
 
 The **base ID** is the `app…` segment of the base's URL.
 
-## Part 3 — Cloudflare Pages project
+## Part 3 — Cloudflare Worker
 
-**Workers & Pages → Create → Pages → Connect to Git.** When installing the GitHub app,
+**Workers & Pages → Create → Import a repository.** When installing the GitHub app,
 choose **"Only select repositories"** and pick this one.
 
 | Setting | Value |
 | --- | --- |
+| Worker name | `eucf-website` — must match `name` in `eucf-website/wrangler.jsonc` |
 | Production branch | `main` |
 | Root directory | `eucf-website` |
 | Build command | `npm run build` |
-| Output directory | `out` |
+| Deploy command | `npx wrangler deploy` |
 
 `npm run build` triggers `prebuild`, which runs the Airtable content sync and the image
 pipeline before Next.js builds. See [README](../README.md) for what those do.
 
-### Environment variables
+The Worker has no server code. `eucf-website/wrangler.jsonc` points `wrangler deploy` at the
+static export in `out/`. Without that file, wrangler tries to convert the site to OpenNext
+and the build fails.
 
-**Settings → Environment variables**, set on **Production**:
+### Build variables
+
+**Settings → Build → Variables and secrets**:
 
 | Variable | Value comes from |
 | --- | --- |
-| `AIRTABLE_TOKEN` | Part 2 — mark **encrypted** |
+| `AIRTABLE_TOKEN` | Part 2 — add as **Secret** |
 | `AIRTABLE_BASE_ID` | the base URL |
 | `R2_ACCOUNT_ID` | R2 overview page |
-| `R2_ACCESS_KEY_ID` | Part 2 — mark **encrypted** |
-| `R2_SECRET_ACCESS_KEY` | Part 2 — mark **encrypted** |
+| `R2_ACCESS_KEY_ID` | Part 2 — add as **Secret** |
+| `R2_SECRET_ACCESS_KEY` | Part 2 — add as **Secret** |
 | `R2_BUCKET` | `eucf-images` |
 | `R2_PUBLIC_BASE_URL` | `https://assets.esportsatucf.com` — no trailing slash |
-| `NODE_VERSION` | `22` — Pages' default may predate what Next requires |
+| `NODE_VERSION` | `22` — pinned to match CI |
 
-**Why only three are encrypted.** Marking a variable encrypted makes it write-only — Pages
-will not show you the value again. That is what you want for anything that grants access,
+> **Use the Build section.** The Worker also has a runtime **Settings → Variables and
+> Secrets** page. The build can't see anything set there, so variables set there are
+> treated as absent (see below).
+
+**Why only three are secrets.** A secret is write-only — Cloudflare will not show you the
+value again. That is what you want for anything that grants access,
 and a nuisance for everything else. The rest are either already public (`R2_BUCKET` and
 `R2_PUBLIC_BASE_URL` appear in the repo and in every image URL on the live site) or values
 you will want to re-read while debugging — `R2_PUBLIC_BASE_URL` most of all, since it has
@@ -165,36 +174,35 @@ The Airtable variables have two distinct failure modes:
 - **Absent entirely** — the sync skips itself and exits 0, because that is how CI builds
   without secrets. On Cloudflare that means a **successful** deploy with no rosters. If
   the site suddenly shows "Roster coming soon" everywhere, check that these variables
-  still exist on the Pages project.
+  still exist in the Worker's build variables.
 
 ### Preview builds
 
-**Builds for non-production branches: off.** CI already builds every push to `dev`, and a
-preview build with credentials runs the image pipeline against the production base. That
-means unmerged code could write image URLs into live records and clear officers' upload
-attachments.
+**Settings → Build → Branch control → Builds for non-production branches: off.** CI already
+builds every push to `dev`, and a preview build with credentials runs the image pipeline
+against the production base. That means unmerged code could write image URLs into live
+records and clear officers' upload attachments.
 
-If you want previews later (say, to show officers a redesign before it ships), enable them
-for specific branches only, set just `NODE_VERSION` on the Preview environment, and
-**leave the Airtable and R2 variables off it**. Without credentials the sync skips, and
-the preview builds from the committed placeholder content with no effect on production.
+If you want previews later (say, to show officers a redesign before it ships), don't turn
+them on while the Airtable and R2 build variables are set, unless you have confirmed a
+preview build can't see them. Without credentials the sync skips, and the preview builds
+from the committed placeholder content with no effect on production.
 
 ### Custom domain
 
-**Pages → Custom domains** → add `esportsatucf.com`, plus `www` if you want it redirecting.
+**Settings → Domains & Routes → Add → Custom domain** → add `esportsatucf.com`, plus `www`
+if you want it. If an old Pages project still holds the domain, remove it there first.
 
 ## Part 4 — Publishing from Airtable
 
 ### Deploy hook
 
-**Settings → Builds & deployments → Deploy hooks → Add deploy hook**
+**Settings → Build → Deploy Hooks**
 
 - Name: `airtable-publish`
 - Branch: `main`
 
-You get a URL of the form
-`https://api.cloudflare.com/client/v4/pages/webhooks/deploy_hooks/<uuid>`. A bare `POST`
-starts a build.
+Copy the generated URL. A bare `POST` to it starts a build.
 
 > **This URL is unauthenticated — possession is the credential.** It lives in plaintext
 > inside the Airtable automation below, so anyone who can edit the base can trigger a
@@ -266,7 +274,7 @@ Full field contract, including every non-image column:
 
 1. Put one test image in an `image upload` cell and tick `publish`.
 2. The checkbox clears within seconds → the automation's **run history** shows green → a
-   deployment appears in Pages.
+   build appears in the Worker's build history, triggered by `airtable-publish`.
 3. The build log shows
    `[sync-images] 1 attachment(s): 1 uploaded, 0 reused (dedup), 1 record(s) updated, 0 failed.`
 4. The Airtable record's `image` column now holds
@@ -285,14 +293,14 @@ Full field contract, including every non-image column:
 Do this at officer turnover, or immediately if a credential may have leaked.
 
 **R2 token** — R2 → API Tokens → create a replacement (same scope: `eucf-images`, Object
-Read & Write) → update `R2_ACCESS_KEY_ID` and `R2_SECRET_ACCESS_KEY` in Pages → redeploy to
-confirm → revoke the old token.
+Read & Write) → update `R2_ACCESS_KEY_ID` and `R2_SECRET_ACCESS_KEY` in the Worker's build
+variables → redeploy to confirm → revoke the old token.
 
 **Airtable token** — same shape: create with `data.records:read` + `data.records:write`,
-update `AIRTABLE_TOKEN` in Pages, redeploy, revoke the old one.
+update `AIRTABLE_TOKEN` in the Worker's build variables, redeploy, revoke the old one.
 
-**Deploy hook** — delete and recreate it in Pages, then paste the new URL into the Airtable
-automation script.
+**Deploy hook** — delete and recreate it under **Settings → Build → Deploy Hooks**, then
+paste the new URL into the Airtable automation script.
 
 Create the replacement *before* revoking the old one. Both syncs fail soft — a bad token
 produces a green build with stale content, not an obvious error — so verify a real deploy

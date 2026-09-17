@@ -7,7 +7,7 @@ For officers and anyone editing the site's content. Developer setup lives in the
 
 Airtable is the CMS. At build time, `eucf-website/scripts/sync-airtable.ts`
 pulls every table into `eucf-website/src/data/generated/*.json`, and the site is
-built as static HTML and served by Cloudflare Pages.
+built as static HTML and served by Cloudflare.
 
 Nothing is read from Airtable while people are browsing the site. **A change in
 Airtable is only live after a rebuild.**
@@ -300,8 +300,8 @@ If it's still ticked, the Airtable automation never ran. Open **Automations**,
 find the publish automation, and check its **run history** for the failed run
 and its error.
 
-**2. Did a new deployment appear in Cloudflare Pages?**
-If the checkbox cleared but no deployment started, the automation ran but the
+**2. Did a new build appear in the Worker's build history?**
+If the checkbox cleared but no build started, the automation ran but the
 request to Cloudflare failed. The error will be on the script step in that same
 run history — most likely the deploy hook URL is wrong or was regenerated.
 
@@ -321,8 +321,8 @@ the field you changed is one the sync actually reads — see
 will never appear on the site no matter how many times you publish.
 
 **5. Build log says `[sync-airtable] sync failed:`?**
-The build couldn't read Airtable — most likely the token on the Cloudflare Pages
-project is missing, wrong, or expired, but a renamed table or an Airtable outage
+The build couldn't read Airtable — most likely the token in the Worker's build
+variables is missing, wrong, or expired, but a renamed table or an Airtable outage
 does it too. Rosters aren't stored in the repo, so rather than publish a site
 with every roster missing, the build stops and the previous deploy stays live.
 This one needs a developer.
@@ -337,8 +337,8 @@ before assuming the site is broken.
 If a publish put something wrong on the site, you don't need to fix Airtable
 first — you can put the previous version back immediately.
 
-In the Cloudflare Pages project, open **Deployments**, find the last deployment
-you know was good, and use its **Rollback** action. It takes effect right away;
+In the `eucf-website` Worker, open **Deployments**, find the last version you
+know was good, and choose **Rollback**. It takes effect right away;
 no rebuild runs, and nothing in Airtable or the repo changes.
 
 > **Rolling back does not fix Airtable.** The site reverts, but the bad content
