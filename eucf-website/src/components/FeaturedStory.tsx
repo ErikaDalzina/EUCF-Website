@@ -22,7 +22,7 @@ export default async function FeaturedStory() {
                 <div>
                   <h2
                     id={headingId}
-                    className="font-heading text-heading text-4xl sm:text-5xl md:text-5xl font-semibold"
+                    className="font-heading text-heading text-4xl sm:text-5xl md:text-5xl font-semibold text-pretty"
                   >
                     {story.title}
                   </h2>

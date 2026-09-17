@@ -9,10 +9,10 @@ export default function Footer() {
           <div className="flex flex-col justify-between space-y-4">
             <div>
               <Image
-                src="/SecondaryShield.png"
+                src="/Secondary_Knight.png"
                 alt="UCF Logo"
-                width={112}
-                height={112}
+                width={280}
+                height={336}
                 className="h-28 w-28 object-contain"
               />
             </div>
