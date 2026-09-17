@@ -131,7 +131,7 @@ pipeline before Next.js builds. See [README](../README.md) for what those do.
 
 ### Environment variables
 
-**Settings → Environment variables**, set on **both Production and Preview**:
+**Settings → Environment variables**, set on **Production**:
 
 | Variable | Value comes from |
 | --- | --- |
@@ -167,9 +167,17 @@ The Airtable variables have two distinct failure modes:
   the site suddenly shows "Roster coming soon" everywhere, check that these variables
   still exist on the Pages project.
 
-> Preview deployments share the same Airtable base and R2 bucket. This is harmless —
-> content-hash keys mean a preview upload just pre-warms an object production would have
-> written anyway — but a preview build *does* consume upload attachments for real.
+### Preview builds
+
+**Builds for non-production branches: off.** CI already builds every push to `dev`, and a
+preview build with credentials runs the image pipeline against the production base. That
+means unmerged code could write image URLs into live records and clear officers' upload
+attachments.
+
+If you want previews later (say, to show officers a redesign before it ships), enable them
+for specific branches only, set just `NODE_VERSION` on the Preview environment, and
+**leave the Airtable and R2 variables off it**. Without credentials the sync skips, and
+the preview builds from the committed placeholder content with no effect on production.
 
 ### Custom domain
 
