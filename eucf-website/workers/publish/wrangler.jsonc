@@ -1,0 +1,10 @@
+{
+  "name": "eucf-publish",
+  "main": "index.ts",
+  "compatibility_date": "2026-09-16",
+  "workers_dev": false,
+  "preview_urls": false,
+  "keep_vars": true,
+  "observability": { "enabled": true },
+  "routes": [{ "pattern": "publish.esportsatucf.com", "custom_domain": true }]
+}

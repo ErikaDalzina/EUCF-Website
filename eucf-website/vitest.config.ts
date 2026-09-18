@@ -14,7 +14,11 @@ export default defineConfig({
         test: {
           name: "node",
           environment: "node",
-          include: ["tests/scripts/**/*.test.ts", "tests/data/**/*.test.ts"],
+          include: [
+            "tests/scripts/**/*.test.ts",
+            "tests/data/**/*.test.ts",
+            "tests/workers/**/*.test.ts",
+          ],
         },
       },
       {
