@@ -238,8 +238,9 @@ users. Cloudflare may ask for a payment method even on Free.
 3. **Policy:** action **Allow**, include **Emails**, and list the officers who may publish.
    Applications are deny-by-default, so no block rule is needed. Never use "emails ending
    in" with a university domain — that would let any student publish.
-4. On the application's overview, copy the **Application Audience (AUD) tag**. Your
-   **team domain** is under **Settings**, as `https://<team-name>.cloudflareaccess.com`.
+4. Back in **Applications**, select **Configure** on the application and copy the
+   **Application Audience (AUD) Tag** from **Additional settings**. Your **team domain**
+   is under **Settings**, as `https://<team-name>.cloudflareaccess.com`.
    Deleting and recreating the application issues a **new AUD tag**; `ACCESS_AUD` has to be
    updated to match or every officer gets "Forbidden".
 
