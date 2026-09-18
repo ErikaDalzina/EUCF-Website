@@ -15,7 +15,7 @@ You need admin access to three things:
 
 | System | Owns |
 | --- | --- |
-| Cloudflare account (club-owned) | the domain, the Worker, R2 |
+| Cloudflare account (club-owned) | the domain, both Workers, R2, Zero Trust (Access) |
 | Airtable base (club-owned) | all site content |
 | GitHub repository | the code the Worker builds from |
 
@@ -26,13 +26,16 @@ R2 custom domain and the Worker custom domain require it.
 
 ```mermaid
 flowchart TD
+    OF[Officer]
+    PUB[publish.esportsatucf.com<br/>Access-protected Worker]
     AT[Airtable base<br/>content + image uploads]
     GH[GitHub repo]
     CF[Cloudflare Workers build]
     R2[(R2 bucket<br/>eucf-images)]
     SITE[esportsatucf.com<br/>static HTML on CDN]
 
-    AT -->|publish checkbox fires deploy hook| CF
+    OF -->|Publish button in Airtable| PUB
+    PUB -->|deploy hook| CF
     GH -->|push to main| CF
     CF -->|prebuild pulls content| AT
     CF -->|optimized images + URLs written back| R2
@@ -40,8 +43,8 @@ flowchart TD
     R2 -->|assets.esportsatucf.com| SITE
 ```
 
-Two things trigger a deploy — an officer ticking `publish` in Airtable, and a developer
-pushing to `main` — and **both build on Cloudflare**, using the Worker's build
+Two things trigger a deploy — an officer pressing **Publish now** on the publish page, and
+a developer pushing to `main` — and **both build on Cloudflare**, using the Worker's build
 variables. GitHub only stores the code.
 
 GitHub Actions runs lint, typecheck, tests, and a build on every push, but **never
@@ -60,6 +63,7 @@ write-scoped production credentials out of a system that runs on every pull requ
 | Bucket is **public-read, credential-write** | `assets.esportsatucf.com` serves read-only GETs of individual objects. The S3 API endpoint stays credential-only — no listing, no writes without the token. |
 | API token scoped to **one bucket**, no expiry | An expiring token fails *silently* — image sync errors don't fail the build, so the site would publish without new photos and nobody would notice. Rotation is tied to officer turnover instead. |
 | Secrets live in **Cloudflare build variables**, not GitHub | See above. Also halves the rotation surface. |
+| Publishing goes through an **Access-protected Worker**, not an Airtable script | Airtable's Run script action needs the paid Team plan. The Worker keeps the deploy hook URL as a secret instead of leaving it readable to anyone who can edit the base, and Access records who published. It fits Cloudflare's free tier: a publish is about three Worker requests, Access turns away anyone not signed in before the Worker runs, and the site Worker's static-asset traffic doesn't count toward the request limit. |
 | No Tiered Cache, no Hotlink Protection | Content-hash keys with `immutable` headers already cache at the ceiling; misses cost one Class B op against a 10M/month free tier. Hotlink Protection can challenge legitimate image requests, and R2 egress is free. |
 
 > **The bucket is a public asset host.** Anything placed in it is world-readable. Never
@@ -170,7 +174,7 @@ The Airtable variables have two distinct failure modes:
   rate-limiting) — the build **fails**. Rosters exist only in Airtable, so there is
   nothing to fall back to and publishing would strip every roster off the site. The
   previous deploy stays live; see
-  [RUNBOOK](RUNBOOK.md#when-a-publish-doesnt-go-through), step 5.
+  [RUNBOOK](RUNBOOK.md#when-a-publish-doesnt-go-through), step 6.
 - **Absent entirely** — the sync skips itself and exits 0, because that is how CI builds
   without secrets. On Cloudflare that means a **successful** deploy with no rosters. If
   the site suddenly shows "Roster coming soon" everywhere, check that these variables
@@ -193,61 +197,92 @@ from the committed placeholder content with no effect on production.
 **Settings → Domains & Routes → Add → Custom domain** → add `esportsatucf.com`, plus `www`
 if you want it. If an old Pages project still holds the domain, remove it there first.
 
-## Part 4 — Publishing from Airtable
+## Part 4 — Publishing
+
+Officers publish from a small page at `publish.esportsatucf.com`. It is a second Worker,
+`eucf-publish`, with its code in
+[`eucf-website/workers/publish/`](../eucf-website/workers/publish/). Pressing **Publish
+now** makes it POST to the site Worker's deploy hook. Cloudflare Access sits in front of
+the page, so only officers on an email allow list can open it, and the hook URL never
+leaves Cloudflare.
+
+Set these up in the order below. The Worker also checks every request's Access token
+itself, so until Access is in place it refuses everything.
 
 ### Deploy hook
 
-**Settings → Build → Deploy Hooks**
+**`eucf-website` Worker → Settings → Build → Deploy Hooks**
 
 - Name: `airtable-publish`
 - Branch: `main`
 
-Copy the generated URL. A bare `POST` to it starts a build.
+Copy the generated URL. A bare `POST` to it starts a build with no authentication, so
+anyone who has the URL can trigger builds. It goes only into the publish Worker's secret
+below, never into Airtable, the repo, or a chat.
 
-> **This URL is unauthenticated — possession is the credential.** It lives in plaintext
-> inside the Airtable automation below, so anyone who can edit the base can trigger a
-> deploy. Treat "can edit the base" as "can publish the site," and regenerate the hook if
-> base access is ever shared widely.
+### Access application
+
+**Zero Trust.** The first time, pick a team name and the **Free** plan, which covers 50
+users. Cloudflare may ask for a payment method even on Free.
+
+1. **Settings → Authentication:** make sure **One-time PIN** is enabled. Officers sign in
+   with a code emailed to them, so they don't need accounts.
+2. **Access → Applications → Add an application → Self-hosted**
+   - Domain: `publish.esportsatucf.com`
+   - Session duration: `24 hours`
+3. **Policy:** action **Allow**, include **Emails**, and list the officers who may publish.
+4. On the application's overview, copy the **Application Audience (AUD) tag**. Your
+   **team domain** is `https://<team-name>.cloudflareaccess.com`.
+
+### Publish Worker
+
+From `eucf-website/`, in a Windows shell:
+
+```bash
+npx wrangler login        # sign in to the club's Cloudflare account
+npm run deploy:publish    # creates eucf-publish on publish.esportsatucf.com
+npx wrangler secret put DEPLOY_HOOK_URL -c workers/publish/wrangler.jsonc
+```
+
+Then, under **`eucf-publish` → Settings → Variables and Secrets**, add two plaintext
+variables:
+
+| Variable | Value |
+| --- | --- |
+| `ACCESS_TEAM_DOMAIN` | `https://<team-name>.cloudflareaccess.com`, no trailing slash |
+| `ACCESS_AUD` | the AUD tag from the Access application |
+
+These are identifiers, not credentials, so they stay readable. `keep_vars` in
+`workers/publish/wrangler.jsonc` stops later deploys from wiping them. Until all three
+values exist, the page answers every request with "not configured".
+
+**Under Settings → Domains & Routes, confirm the `workers.dev` route and preview URLs are
+disabled.** `wrangler.jsonc` turns both off. If either is ever re-enabled, the page is also
+reachable at an address Access doesn't cover. The Worker's own token check would still
+refuse those requests, but Access would no longer be screening them first.
+
+The publish Worker isn't connected to Git. After changing its code, redeploy it with
+`npm run deploy:publish`.
+
+Failed deploy-hook calls and rejected Access tokens are logged; read them under the
+`eucf-publish` Worker's **Observability** tab.
 
 ### The `deploy` table
 
-Create a table named `deploy` with **one record** and one **checkbox** field named
-`publish`. No code reads this table — the sync ignores it entirely — so the schema is
-yours to change.
+In Airtable, create a table named `deploy` with two fields and **one record**:
 
-### The automation
+| Field | Type | Value in the record |
+| --- | --- | --- |
+| `name` (primary) | Single line text | `Publish site` |
+| `publish` | Button → **Open URL**, label `Publish` | URL formula `"https://publish.esportsatucf.com"` |
 
-**Automations → Create automation**
+Airtable requires the primary field to be text-like, which is why `name` exists. New
+tables come with extra fields and a few empty rows; delete them. No automation is needed,
+and no code reads this table. The button is only a shortcut; a bookmark to the publish
+page works just as well.
 
-**Trigger: "When record matches conditions"** — table `deploy`, condition `publish` **is
-checked**.
-
-Use this trigger rather than "When record is updated." The last action unchecks the box,
-and an update-watching trigger can re-fire on its own write and loop.
-
-**Action 1 — Run script:**
-
-```js
-const HOOK = "<your deploy hook URL>";
-
-const res = await fetch(HOOK, { method: "POST" });
-if (!res.ok) {
-    throw new Error(`Deploy hook failed: ${res.status} ${await res.text()}`);
-}
-console.log("Build triggered");
-```
-
-Use **Run script**, not "Send web request" — that action requires a paid Airtable plan.
-Automation scripts run server-side, so plain `fetch` works.
-
-The explicit `throw` matters: without it a 4xx passes silently and the checkbox still
-clears, which would make the runbook's first troubleshooting step give the wrong answer.
-
-**Action 2 — Update record:** the trigger record, `publish` → unchecked. This is what
-makes the checkbox untick itself, which is how officers know the request went through.
-
-**Turn the automation on.** Airtable leaves new automations disabled by default, and that
-is the most common reason a first test does nothing.
+> **Who can publish:** only people whose email is on the Access policy. Editing the
+> Airtable base does not give anyone publish access.
 
 ## Part 5 — Airtable schema
 
@@ -272,9 +307,10 @@ Full field contract, including every non-image column:
 
 ## Verification
 
-1. Put one test image in an `image upload` cell and tick `publish`.
-2. The checkbox clears within seconds → the automation's **run history** shows green → a
-   build appears in the Worker's build history, triggered by `airtable-publish`.
+1. Put one test image in an `image upload` cell, click **Publish** in the `deploy` table,
+   sign in, and press **Publish now**.
+2. The page shows "Build started", and a build triggered by `airtable-publish` appears in
+   the `eucf-website` Worker's build history.
 3. The build log shows
    `[sync-images] 1 attachment(s): 1 uploaded, 0 reused (dedup), 1 record(s) updated, 0 failed.`
 4. The Airtable record's `image` column now holds
@@ -287,6 +323,14 @@ Full field contract, including every non-image column:
    object, and an unauthenticated request to `*.r2.cloudflarestorage.com` should be
    rejected.
 7. Load the live site and check the image renders with no CSP violations in the console.
+8. Logged out, `curl -sI https://publish.esportsatucf.com` returns a redirect to
+   `<team-name>.cloudflareaccess.com`. The page is never served to someone who hasn't
+   signed in.
+9. Entering an email that is **not** on the Access policy never receives a code, so the
+   page can't be opened.
+10. The Worker's `workers.dev` address (`eucf-publish.<subdomain>.workers.dev`) doesn't
+    respond. If it ever does, it should answer `403 Forbidden`, since the request carries
+    no Access token; turn the route back off either way.
 
 ## Rotating credentials
 
@@ -299,9 +343,18 @@ variables → redeploy to confirm → revoke the old token.
 **Airtable token** — same shape: create with `data.records:read` + `data.records:write`,
 update `AIRTABLE_TOKEN` in the Worker's build variables, redeploy, revoke the old one.
 
-**Deploy hook** — delete and recreate it under **Settings → Build → Deploy Hooks**, then
-paste the new URL into the Airtable automation script.
+**Deploy hook** — delete and recreate it under **`eucf-website` → Settings → Build →
+Deploy Hooks**, then store the new URL by running this from `eucf-website/`:
+`npx wrangler secret put DEPLOY_HOOK_URL -c workers/publish/wrangler.jsonc`. Press
+**Publish now** once to confirm.
 
-Create the replacement *before* revoking the old one. Both syncs fail soft — a bad token
-produces a green build with stale content, not an obvious error — so verify a real deploy
-between the two steps.
+**Who can publish** — update the email list in the Access policy, and remove departed
+officers under **Zero Trust → Users** to free their seats on the 50-user free plan.
+
+Create each replacement *before* revoking the old one, and confirm with a real deploy in
+between. The two tokens fail differently:
+
+- **A bad Airtable token fails the build**, and the previous deploy stays live.
+- **A bad R2 token only skips images**: uploads fail, but the build still succeeds.
+  R2 is only contacted when an upload is pending, so rotate with a test image waiting in
+  an `image upload` cell and check the build log's `[sync-images]` summary line.

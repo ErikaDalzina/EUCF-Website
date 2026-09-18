@@ -267,8 +267,8 @@ soon" on the affected pages. That's expected and publishes fine.
 
 ## Publishing
 
-> Setting up the publish button itself — the deploy hook, the `deploy` table, and
-> the automation behind it — is documented in [SETUP.md](SETUP.md#part-4--publishing-from-airtable).
+> Setting up publishing itself — the deploy hook, the publish page, and the
+> `deploy` table — is documented in [SETUP.md](SETUP.md#part-4--publishing).
 
 Editing Airtable does **not** change the site. The site is rebuilt from scratch
 each time you publish, and whatever is in Airtable at that moment is what ships.
@@ -276,18 +276,21 @@ each time you publish, and whatever is in Airtable at that moment is what ships.
 To publish:
 
 1. Make and review all your changes in Airtable.
-2. Open the **`deploy`** table and tick the **`publish`** checkbox.
-3. The checkbox unticks itself once the build has been triggered — that's your
-   confirmation the request went through, not that the build finished.
-4. Wait a few minutes, then hard-refresh the site and check your change.
+2. Open the **`deploy`** table and click **Publish**. A page opens at
+   `publish.esportsatucf.com`.
+3. If it asks, enter your email and the one-time code it sends you. Only officers
+   on the publish list can get in.
+4. Press **Publish now**. "Build started" means the request went through, not that
+   the build has finished.
+5. Wait a few minutes, then hard-refresh the site and check your change.
 
 A few things worth knowing:
 
 - **Publishing is all-or-nothing.** Every pending change in Airtable goes live
   together. There's no way to publish one team and hold back another — stage
   edits so the base is always in a state you're happy to ship.
-- **Ticking the box again starts another build.** If nothing seems to be
-  happening, work through the section below rather than ticking repeatedly.
+- **Pressing Publish now again starts another build.** If nothing seems to be
+  happening, work through the section below rather than pressing it repeatedly.
 - **Code changes publish separately.** Anything merged to the `main` branch
   rebuilds the site on its own; you don't need to publish for that.
 
@@ -295,17 +298,23 @@ A few things worth knowing:
 
 Work down this list in order — each step tells you which system to look at next.
 
-**1. Did the `publish` checkbox untick itself?**
-If it's still ticked, the Airtable automation never ran. Open **Automations**,
-find the publish automation, and check its **run history** for the failed run
-and its error.
+**1. Can't get past the sign-in page?**
+Your email isn't on the publish list, or you entered a different address from
+the one on it. Ask whoever manages the club's Cloudflare account to add you.
+If you do get past sign-in but the page only says "Forbidden" or "Publish page
+is not configured", the publish page's settings are wrong. This one needs a
+developer.
 
-**2. Did a new build appear in the Worker's build history?**
-If the checkbox cleared but no build started, the automation ran but the
-request to Cloudflare failed. The error will be on the script step in that same
-run history — most likely the deploy hook URL is wrong or was regenerated.
+**2. Did the page say "Publish failed"?**
+Cloudflare rejected the request to start a build. The status number shown helps
+a developer; most likely the deploy hook was regenerated and the publish page
+still has the old one. This one needs a developer.
 
-**3. Did the deployment fail?**
+**3. Page said "Build started", but no new build is in the Worker's build history?**
+Wait a minute and refresh the build history. If it still isn't there, this one
+needs a developer.
+
+**4. Did the deployment fail?**
 Open the build log and search for `content validation failed:`. If it's there,
 this is a **content problem, not a site problem** — the message names the table,
 the team, and usually the player. Fix it in Airtable and publish again. See
@@ -314,20 +323,20 @@ the team, and usually the player. Fix it in Airtable and publish again. See
 **Nothing was published, and the live site is untouched.** A failed build never
 takes the site down.
 
-**4. Build succeeded but your change isn't visible?**
+**5. Build succeeded but your change isn't visible?**
 Hard-refresh the page first. Then confirm you edited the right record, and that
 the field you changed is one the sync actually reads — see
 [Airtable field contract](#airtable-field-contract). A field the sync ignores
 will never appear on the site no matter how many times you publish.
 
-**5. Build log says `[sync-airtable] sync failed:`?**
+**6. Build log says `[sync-airtable] sync failed:`?**
 The build couldn't read Airtable — most likely the token in the Worker's build
 variables is missing, wrong, or expired, but a renamed table or an Airtable outage
 does it too. Rosters aren't stored in the repo, so rather than publish a site
 with every roster missing, the build stops and the previous deploy stays live.
 This one needs a developer.
 
-**6. Every game page says "Roster coming soon" but the build succeeded?**
+**7. Every game page says "Roster coming soon" but the build succeeded?**
 That's Airtable returning zero players, not a failure — the `players` table is
 empty, or the `main teams` / `sub teams` links are all unset. Check the table
 before assuming the site is broken.
