@@ -17,10 +17,11 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "sync:content": "node --env-file-if-exists=.env.local --import tsx scripts/sync-airtable.ts",
-    "sync:images": "node --env-file-if-exists=.env.local --import tsx scripts/sync-images.ts"
+    "sync:images": "node --env-file-if-exists=.env.local --import tsx scripts/sync-images.ts",
+    "deploy:publish": "npx wrangler deploy -c workers/publish/wrangler.jsonc"
   },
   "dependencies": {
-    "next": "16.2.10",
+    "next": "^16.3.5",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },
@@ -36,9 +37,10 @@
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^6.0.3",
     "eslint": "^9",
-    "eslint-config-next": "16.2.10",
+    "eslint-config-next": "^16.3.5",
+    "jose": "^6.2.12",
     "jsdom": "^29.1.1",
-    "sharp": "^0.34",
+    "sharp": "^0.35.4",
     "tailwindcss": "^4",
     "tsx": "^4",
     "typescript": "^5",

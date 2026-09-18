@@ -167,9 +167,9 @@ export function originalExt(type: string, filename: string): string {
 
 type Optimized = { data: Buffer; ext: string; contentType: string };
 
-// sharp's declarations use `export =`, so its module type is the callable
-// itself; at runtime node's ESM→CJS interop exposes it on `.default`.
-type SharpModule = typeof import("sharp");
+// sharp 0.35 publishes ESM types, so the callable is the default export;
+// node's ESM→CJS interop exposes it there at runtime too.
+type SharpModule = (typeof import("sharp"))["default"];
 
 async function optimize(
   sharp: SharpModule,
@@ -265,7 +265,7 @@ export async function syncImages(jobs: ImageJob[]): Promise<void> {
   let sharp: SharpModule;
   let s3: typeof import("@aws-sdk/client-s3");
   try {
-    sharp = (await import("sharp") as unknown as { default: SharpModule }).default;
+    sharp = (await import("sharp")).default;
     s3 = await import("@aws-sdk/client-s3");
   } catch (e) {
     console.warn(
