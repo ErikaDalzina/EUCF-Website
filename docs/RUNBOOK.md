@@ -290,8 +290,8 @@ A few things worth knowing:
   together. There's no way to publish one team and hold back another — stage
   edits so the base is always in a state you're happy to ship.
 - **The button disappears once a build starts**, so you can't set off a second one
-  by accident. Reloading keeps that page; open the page again from Airtable if you
-  really do need to publish twice. If nothing seems to be happening, work through
+  by accident. If you really do need to publish twice, the **Publish again** link on
+  that page brings the button back. If nothing seems to be happening, work through
   the section below rather than publishing repeatedly.
 - **Code changes publish separately.** Anything merged to the `main` branch
   rebuilds the site on its own; you don't need to publish for that.

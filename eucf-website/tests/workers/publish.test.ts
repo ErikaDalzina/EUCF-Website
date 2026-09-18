@@ -164,6 +164,7 @@ describe("publishing", () => {
     const started = await (await call({ path: "/?status=started" })).text();
     expect(started).toContain("Build started");
     expect(started).not.toContain("<form");
+    expect(started).toContain('<a href="/">');
 
     const failed = await (await call({ path: "/?status=failed&code=500" })).text();
     expect(failed).toContain('<form method="post">');

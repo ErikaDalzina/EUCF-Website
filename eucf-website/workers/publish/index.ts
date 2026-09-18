@@ -54,7 +54,8 @@ button{font:inherit;padding:.6rem 1.2rem;cursor:pointer}
 ${notice}
 ${
   started
-    ? `<p>Check the site in a few minutes. Reload this page to publish again.</p>`
+    ? `<p>Check the site in a few minutes.</p>
+<p><a href="/">Publish again</a></p>`
     : `<p>Publishing rebuilds the site from whatever is in Airtable right now.</p>
 <form method="post"><button type="submit">Publish now</button></form>`
 }
