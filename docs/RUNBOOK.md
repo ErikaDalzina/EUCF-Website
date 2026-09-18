@@ -289,8 +289,10 @@ A few things worth knowing:
 - **Publishing is all-or-nothing.** Every pending change in Airtable goes live
   together. There's no way to publish one team and hold back another — stage
   edits so the base is always in a state you're happy to ship.
-- **Pressing Publish now again starts another build.** If nothing seems to be
-  happening, work through the section below rather than pressing it repeatedly.
+- **The button disappears once a build starts**, so you can't set off a second one
+  by accident. Reloading keeps that page; open the page again from Airtable if you
+  really do need to publish twice. If nothing seems to be happening, work through
+  the section below rather than publishing repeatedly.
 - **Code changes publish separately.** Anything merged to the `main` branch
   rebuilds the site on its own; you don't need to publish for that.
 
