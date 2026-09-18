@@ -160,6 +160,15 @@ describe("publishing", () => {
     );
   });
 
+  it("drops the button once a build has started, and keeps it when one failed", async () => {
+    const started = await (await call({ path: "/?status=started" })).text();
+    expect(started).toContain("Build started");
+    expect(started).not.toContain("<form");
+
+    const failed = await (await call({ path: "/?status=failed&code=500" })).text();
+    expect(failed).toContain('<form method="post">');
+  });
+
   it("never echoes query text into the page", async () => {
     const res = await call({ path: "/?status=failed&code=<script>alert(1)</script>" });
     const body = await res.text();

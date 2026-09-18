@@ -36,7 +36,7 @@ function banner(params: URLSearchParams): string {
   return "";
 }
 
-const page = (notice: string) => `<!doctype html>
+const page = (notice: string, started: boolean) => `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -52,8 +52,12 @@ button{font:inherit;padding:.6rem 1.2rem;cursor:pointer}
 <body>
 <h1>Publish esportsatucf.com</h1>
 ${notice}
-<p>Publishing rebuilds the site from whatever is in Airtable right now.</p>
-<form method="post"><button type="submit">Publish now</button></form>
+${
+  started
+    ? `<p>Check the site in a few minutes. Reload this page to publish again.</p>`
+    : `<p>Publishing rebuilds the site from whatever is in Airtable right now.</p>
+<form method="post"><button type="submit">Publish now</button></form>`
+}
 </body>
 </html>`;
 
@@ -97,7 +101,8 @@ export function createWorker(getKeys: (env: Env) => JWTVerifyGetKey) {
       if (!(await isAuthorized(request, env))) return text("Forbidden", 403);
 
       if (request.method === "GET") {
-        return new Response(page(banner(url.searchParams)), {
+        const params = url.searchParams;
+        return new Response(page(banner(params), params.get("status") === "started"), {
           headers: { ...SECURITY_HEADERS, "Content-Type": "text/html; charset=utf-8" },
         });
       }
