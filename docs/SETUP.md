@@ -225,24 +225,42 @@ below, never into Airtable, the repo, or a chat.
 **Zero Trust.** The first time, pick a team name and the **Free** plan, which covers 50
 users. Cloudflare may ask for a payment method even on Free.
 
-1. **Settings → Authentication:** make sure **One-time PIN** is enabled. Officers sign in
-   with a code emailed to them, so they don't need accounts.
-2. **Access → Applications → Add an application → Self-hosted**
-   - Domain: `publish.esportsatucf.com`
+1. **Integrations → Identity providers → Add new identity provider → One-time PIN.** New
+   organizations default to the Cloudflare identity provider, which expects officers to
+   have Cloudflare accounts; a one-time PIN only needs their email. Turn on **Apply
+   instant authentication** so they skip the provider-picker screen.
+2. **Access controls → Applications → Create new application → Self-hosted and private →
+   Add public hostname**
+   - Subdomain `publish`, domain `esportsatucf.com`, path empty
    - Session duration: `24 hours`
+   - Login methods: **One-time PIN** only, so officers are never offered a sign-in they
+     can't complete
 3. **Policy:** action **Allow**, include **Emails**, and list the officers who may publish.
+   Applications are deny-by-default, so no block rule is needed. Never use "emails ending
+   in" with a university domain — that would let any student publish.
 4. On the application's overview, copy the **Application Audience (AUD) tag**. Your
-   **team domain** is `https://<team-name>.cloudflareaccess.com`.
+   **team domain** is under **Settings**, as `https://<team-name>.cloudflareaccess.com`.
+   Deleting and recreating the application issues a **new AUD tag**; `ACCESS_AUD` has to be
+   updated to match or every officer gets "Forbidden".
 
 ### Publish Worker
 
 From `eucf-website/`, in a Windows shell:
 
 ```bash
-npx wrangler login        # sign in to the club's Cloudflare account
+read -rs CLOUDFLARE_API_TOKEN && export CLOUDFLARE_API_TOKEN
+export CLOUDFLARE_ACCOUNT_ID="<account id>"
 npm run deploy:publish    # creates eucf-publish on publish.esportsatucf.com
 npx wrangler secret put DEPLOY_HOOK_URL -c workers/publish/wrangler.jsonc
 ```
+
+Create the token under **My Profile → API Tokens → Create Custom Token** with **Account →
+Workers Scripts → Edit** and **Zone → Workers Routes → Edit** on `esportsatucf.com` only.
+Add **Zone → DNS → Edit** if the custom domain fails to attach on the first deploy. The
+account ID is in the dashboard URL and in the Workers & Pages sidebar. `npx wrangler login`
+works too, but its OAuth scopes cover far more of the account than deploying this Worker
+needs. Both variables last only for that shell session; `read -rs` keeps the token out of
+shell history.
 
 Then, under **`eucf-publish` → Settings → Variables and Secrets**, add two plaintext
 variables:
