@@ -175,7 +175,7 @@ describe("validateContent", () => {
         sponsors: committedSponsors,
         featuredstory: committedStories,
         about: committedAbout,
-        players: committedPlayers as GeneratedContent["players"],
+        players: committedPlayers as unknown as GeneratedContent["players"],
       })
     ).toEqual([]);
   });
